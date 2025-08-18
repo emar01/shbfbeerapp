@@ -1,9 +1,17 @@
 // app.js
 // All kod på svenska
 
-// Ladda och parsa beerXML-generate.xml
-async function hamtaData() {
-  const res = await fetch('https://raw.githubusercontent.com/emar01/shbfbeerapp/main/db/beerXML-generate.xml');
+// Ladda och parsa valfri XML-fil (SHBF eller BJCP)
+async function hamtaData(kalla = 'SHBF') {
+  let url;
+  if (kalla === 'SHBF') {
+    url = 'https://raw.githubusercontent.com/emar01/shbfbeerapp/main/db/beerXML-generate.xml';
+  } else if (kalla === 'BJCP') {
+    url = 'https://raw.githubusercontent.com/emar01/shbfbeerapp/main/db/bjcp-beer-2021_en.xml';
+  } else {
+    throw new Error('Okänd källa');
+  }
+  const res = await fetch(url);
   const xmlText = await res.text();
   const parser = new DOMParser();
   const xml = parser.parseFromString(xmlText, 'text/xml');
@@ -273,9 +281,32 @@ function visaQuizResultat() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const xml = await hamtaData();
+  // Lägg till select/dropdown för källa
+  const sourceDiv = document.createElement('div');
+  sourceDiv.className = 'mb-3';
+  sourceDiv.innerHTML = `
+    <label for="kallaSelect" class="form-label fw-bold">Välj stilguidekälla:</label>
+    <select id="kallaSelect" class="form-select" style="max-width:300px;display:inline-block">
+      <option value="SHBF">SHBF</option>
+      <option value="BJCP">BJCP</option>
+    </select>
+  `;
+  const searchInput = document.getElementById('searchInput');
+  searchInput.parentNode.insertBefore(sourceDiv, searchInput);
+
+  let aktuellKalla = 'SHBF';
+  let xml = await hamtaData(aktuellKalla);
   window.kategorier = parseBeerStyles(xml);
   renderAccordion(window.kategorier);
+
+  // Byt källa vid val
+  document.getElementById('kallaSelect').addEventListener('change', async e => {
+    aktuellKalla = e.target.value;
+    xml = await hamtaData(aktuellKalla);
+    window.kategorier = parseBeerStyles(xml);
+    renderAccordion(window.kategorier);
+    document.getElementById('searchInput').value = '';
+  });
 
   // Sök
   document.getElementById('searchInput').addEventListener('input', e => {
