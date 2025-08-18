@@ -21,45 +21,88 @@ async function hamtaData(kalla = 'SHBF') {
 // Extrahera och gruppera kategorier och typer ur XML enligt instruktionerna
 function parseBeerStyles(xml) {
   const kategorierMap = {};
-  const styleNodes = xml.querySelectorAll('STYLE');
-  styleNodes.forEach(style => {
-    const kategoriNamn = style.querySelector('CATEGORY')?.textContent || '';
-    const kategoriNummer = style.querySelector('CATEGORY_NUMBER')?.textContent || '';
-    const kategoriKey = kategoriNummer + '|' + kategoriNamn;
-    if (!kategorierMap[kategoriKey]) {
-      kategorierMap[kategoriKey] = {
-        namn: kategoriNamn,
-        nummer: kategoriNummer,
-        typer: []
-      };
-    }
-    kategorierMap[kategoriKey].typer.push({
-      namn: style.querySelector('NAME')?.textContent || '',
-      bokstav: style.querySelector('STYLE_LETTER')?.textContent || '',
-      kategori: kategoriNamn,
-      kategoriNummer: kategoriNummer,
-      typ: style.querySelector('TYPE')?.textContent || '',
-      OG_MIN: style.querySelector('OG_MIN')?.textContent || '',
-      OG_MAX: style.querySelector('OG_MAX')?.textContent || '',
-      FG_MIN: style.querySelector('FG_MIN')?.textContent || '',
-      FG_MAX: style.querySelector('FG_MAX')?.textContent || '',
-      IBU_MIN: style.querySelector('IBU_MIN')?.textContent || '',
-      IBU_MAX: style.querySelector('IBU_MAX')?.textContent || '',
-      COLOR_MIN: style.querySelector('COLOR_MIN')?.textContent || '',
-      COLOR_MAX: style.querySelector('COLOR_MAX')?.textContent || '',
-      ABV_MIN: style.querySelector('ABV_MIN')?.textContent || '',
-      ABV_MAX: style.querySelector('ABV_MAX')?.textContent || '',
-      noter: style.querySelector('NOTES')?.textContent || '',
-      profil: style.querySelector('PROFILE')?.textContent || '',
-      exempel: style.querySelector('EXAMPLES')?.textContent || ''
+  // Försök först SHBF-struktur (STYLE)
+  let styleNodes = xml.querySelectorAll('STYLE');
+  if (styleNodes.length > 0) {
+    styleNodes.forEach(style => {
+      const kategoriNamn = style.querySelector('CATEGORY')?.textContent || '';
+      const kategoriNummer = style.querySelector('CATEGORY_NUMBER')?.textContent || '';
+      const kategoriKey = kategoriNummer + '|' + kategoriNamn;
+      if (!kategorierMap[kategoriKey]) {
+        kategorierMap[kategoriKey] = {
+          namn: kategoriNamn,
+          nummer: kategoriNummer,
+          typer: []
+        };
+      }
+      kategorierMap[kategoriKey].typer.push({
+        namn: style.querySelector('NAME')?.textContent || '',
+        bokstav: style.querySelector('STYLE_LETTER')?.textContent || '',
+        kategori: kategoriNamn,
+        kategoriNummer: kategoriNummer,
+        typ: style.querySelector('TYPE')?.textContent || '',
+        OG_MIN: style.querySelector('OG_MIN')?.textContent || '',
+        OG_MAX: style.querySelector('OG_MAX')?.textContent || '',
+        FG_MIN: style.querySelector('FG_MIN')?.textContent || '',
+        FG_MAX: style.querySelector('FG_MAX')?.textContent || '',
+        IBU_MIN: style.querySelector('IBU_MIN')?.textContent || '',
+        IBU_MAX: style.querySelector('IBU_MAX')?.textContent || '',
+        COLOR_MIN: style.querySelector('COLOR_MIN')?.textContent || '',
+        COLOR_MAX: style.querySelector('COLOR_MAX')?.textContent || '',
+        ABV_MIN: style.querySelector('ABV_MIN')?.textContent || '',
+        ABV_MAX: style.querySelector('ABV_MAX')?.textContent || '',
+        noter: style.querySelector('NOTES')?.textContent || '',
+        profil: style.querySelector('PROFILE')?.textContent || '',
+        exempel: style.querySelector('EXAMPLES')?.textContent || ''
+      });
     });
-  });
+  } else {
+    // BJCP-struktur: <category> och <subcategory>
+    let categoryNodes = xml.querySelectorAll('category');
+    categoryNodes.forEach(category => {
+      const kategoriNummer = category.getAttribute('id') || '';
+      const kategoriNamn = category.querySelector('name')?.textContent || '';
+      const kategoriKey = kategoriNummer + '|' + kategoriNamn;
+      if (!kategorierMap[kategoriKey]) {
+        kategorierMap[kategoriKey] = {
+          namn: kategoriNamn,
+          nummer: kategoriNummer,
+          typer: []
+        };
+      }
+      const subNodes = category.querySelectorAll('subcategory');
+      subNodes.forEach(sub => {
+        const subNamn = sub.querySelector('name')?.textContent || '';
+        const subId = sub.getAttribute('id') || '';
+        kategorierMap[kategoriKey].typer.push({
+          namn: subNamn,
+          bokstav: subId.replace(/^[0-9]+/, ''),
+          kategori: kategoriNamn,
+          kategoriNummer: kategoriNummer,
+          typ: '',
+          OG_MIN: '',
+          OG_MAX: '',
+          FG_MIN: '',
+          FG_MAX: '',
+          IBU_MIN: '',
+          IBU_MAX: '',
+          COLOR_MIN: '',
+          COLOR_MAX: '',
+          ABV_MIN: '',
+          ABV_MAX: '',
+          noter: '',
+          profil: '',
+          exempel: ''
+        });
+      });
+    });
+  }
   // Sortera kategorier på nummer, och typer på bokstav
   const kategorier = Object.values(kategorierMap)
-    .sort((a, b) => Number(a.nummer) - Number(b.nummer))
+    .sort((a, b) => String(a.nummer).localeCompare(String(b.nummer), 'sv', {numeric:true}))
     .map(kat => ({
       ...kat,
-      typer: kat.typer.sort((a, b) => a.bokstav.localeCompare(b.bokstav, 'sv'))
+      typer: kat.typer.sort((a, b) => a.namn.localeCompare(b.namn, 'sv'))
     }));
   return kategorier;
 }
@@ -281,20 +324,8 @@ function visaQuizResultat() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Lägg till select/dropdown för källa
-  const sourceDiv = document.createElement('div');
-  sourceDiv.className = 'mb-3';
-  sourceDiv.innerHTML = `
-    <label for="kallaSelect" class="form-label fw-bold">Välj stilguidekälla:</label>
-    <select id="kallaSelect" class="form-select" style="max-width:300px;display:inline-block">
-      <option value="SHBF">SHBF</option>
-      <option value="BJCP">BJCP</option>
-    </select>
-  `;
-  const searchInput = document.getElementById('searchInput');
-  searchInput.parentNode.insertBefore(sourceDiv, searchInput);
 
-  let aktuellKalla = 'SHBF';
+  let aktuellKalla = document.getElementById('kallaSelect').value || 'SHBF';
   let xml = await hamtaData(aktuellKalla);
   window.kategorier = parseBeerStyles(xml);
   renderAccordion(window.kategorier);
