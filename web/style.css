@@ -1,3 +1,133 @@
+/* ======= Modal ======= */
+.app-modal-content {
+  border-radius: 1.2rem;
+}
+.app-modal-header {
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 1.2rem 1.2rem 0 0;
+  padding: 1.2rem 1.5rem 1rem 1.5rem;
+}
+.app-modal-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+.app-modal-body {
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  min-height: 320px;
+}
+/* ======= Header & Brand ======= */
+.app-header {
+  background: var(--beige-bg);
+  box-shadow: 0 2px 8px #d35c1c11;
+}
+.header-flex {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (min-width: 768px) {
+  .header-flex {
+    flex-direction: row;
+  }
+}
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.logo {
+  width: 70px;
+  height: 70px;
+}
+.app-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.quiz-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+}
+.quiz-img {
+  width: 36px;
+  height: 36px;
+  margin-bottom: 0.25rem;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
+  background: #fff;
+}
+
+/* ======= Search & Config ======= */
+.search-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+.search-group {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 420px;
+}
+.search-icon {
+  background: #fff;
+  border-radius: 2rem 0 0 2rem !important;
+  border-right: none !important;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+}
+.search-input {
+  border-radius: 0 2rem 2rem 0 !important;
+  border-left: none !important;
+  font-size: 1.3rem;
+  padding-left: 1.5rem;
+  box-shadow: 0 1px 4px #d35c1c22;
+}
+.search-input:focus {
+  box-shadow: 0 0 0 0.2rem #d35c1c44;
+  border-color: var(--primary-color);
+}
+.config-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+}
+.config-label {
+  font-weight: bold;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 0;
+}
+.kalla-konfig {
+  max-width: 220px;
+  font-size: 1.1rem;
+  box-shadow: 0 1px 4px #d35c1c22;
+  background: var(--primary-color) !important;
+  color: #fff !important;
+  border: 2px solid var(--primary-color) !important;
+}
+.kalla-konfig option {
+  color: #222;
+}
+.kalla-konfig:focus {
+  box-shadow: 0 0 0 0.2rem #d35c1c44;
+  border-color: var(--primary-color);
+}
 /* Modal detaljvy layout */
 #typModal .modal-body {
   min-height: 320px;
