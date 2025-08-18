@@ -266,7 +266,9 @@ let quizIndex = 0;
 let quizRätt = 0;
 
 function startaQuiz() {
-  quizFrågor = skapaQuizFrågor(window.kategorier);
+  // Skapa quizFrågor från en djup klon av window.kategorier så att quiz aldrig påverkar originaldata
+  const kategorierKlon = JSON.parse(JSON.stringify(window.kategorier));
+  quizFrågor = skapaQuizFrågor(kategorierKlon);
   quizSvar = [];
   quizIndex = 0;
   quizRätt = 0;
@@ -277,55 +279,70 @@ function startaQuiz() {
 
 function skapaQuizFrågor(kategorier) {
   // Samla alla typer
+  // Gör en djup kopia av kategorier och typer för quiz så att window.kategorier inte påverkas
   const allaTyper = [];
-  kategorier.forEach(kat => kat.typer.forEach(typ => allaTyper.push({ ...typ, kategori: kat.namn })));
+  kategorier.forEach(kat => kat.typer.forEach(typ => allaTyper.push(JSON.parse(JSON.stringify({ ...typ, kategori: kat.namn })))));
   // Slumpa 10 olika frågor av olika typ
   const frågor = [];
   const shuffle = arr => arr.sort(() => Math.random() - 0.5);
   const valdaTyper = shuffle([...allaTyper]).slice(0, 10);
   valdaTyper.forEach(typ => {
-    // Välj frågetyp slumpmässigt
-    const frågetyper = [
-      'Vilken kategori tillhör ölstilen',
-      'Vilket OG-intervall har ölstilen',
-      'Vilket IBU-intervall har ölstilen',
-      'Vilken alkoholhalt (ABV) har ölstilen',
-      'Vilken färg har ölstilen',
-      'Vilken är rätt profilbeskrivning?',
-      'Vilket är ett exempel på denna stil?'
-    ];
-    const typAv = shuffle(frågetyper)[0];
-    let fråga = '', svar = '', alt = [];
-    if (typAv === 'Vilken kategori tillhör ölstilen') {
-      fråga = `Vilken kategori tillhör ölstilen <b>${typ.namn}</b>?`;
-      svar = typ.kategori;
-      alt = shuffle([typ.kategori, ...allaTyper.filter(t => t.kategori !== typ.kategori).map(t => t.kategori)]).slice(0, 4);
-    } else if (typAv === 'Vilket OG-intervall har ölstilen') {
-      fråga = `Vilket OG-intervall har <b>${typ.namn}</b>?`;
-      svar = `${typ.OG_MIN} – ${typ.OG_MAX}`;
-      alt = shuffle([svar, ...allaTyper.filter(t => t.namn !== typ.namn).map(t => `${t.OG_MIN} – ${t.OG_MAX}`)]).slice(0, 4);
-    } else if (typAv === 'Vilket IBU-intervall har ölstilen') {
-      fråga = `Vilket IBU-intervall har <b>${typ.namn}</b>?`;
-      svar = `${typ.IBU_MIN} – ${typ.IBU_MAX}`;
-      alt = shuffle([svar, ...allaTyper.filter(t => t.namn !== typ.namn).map(t => `${t.IBU_MIN} – ${t.IBU_MAX}`)]).slice(0, 4);
-    } else if (typAv === 'Vilken alkoholhalt (ABV) har ölstilen') {
-      fråga = `Vilket ABV-intervall har <b>${typ.namn}</b>?`;
-      svar = `${typ.ABV_MIN} – ${typ.ABV_MAX} %`;
-      alt = shuffle([svar, ...allaTyper.filter(t => t.namn !== typ.namn).map(t => `${t.ABV_MIN} – ${t.ABV_MAX} %`)]).slice(0, 4);
-    } else if (typAv === 'Vilken färg har ölstilen') {
-      fråga = `Vilket färgintervall har <b>${typ.namn}</b>?`;
-      svar = `${typ.COLOR_MIN} – ${typ.COLOR_MAX}`;
-      alt = shuffle([svar, ...allaTyper.filter(t => t.namn !== typ.namn).map(t => `${t.COLOR_MIN} – ${t.COLOR_MAX}`)]).slice(0, 4);
-    } else if (typAv === 'Vilken är rätt profilbeskrivning?') {
-      fråga = `Vilken är rätt profilbeskrivning för <b>${typ.namn}</b>?`;
-      svar = typ.profil;
-      alt = shuffle([svar, ...allaTyper.filter(t => t.namn !== typ.namn).map(t => t.profil)]).slice(0, 4);
-    } else if (typAv === 'Vilket är ett exempel på denna stil?') {
-      fråga = `Vilket är ett exempel på <b>${typ.namn}</b>?`;
-      svar = typ.exempel.split(/[;,\n]/)[0] || typ.exempel;
-      alt = shuffle([svar, ...allaTyper.filter(t => t.namn !== typ.namn).map(t => t.exempel.split(/[;,\n]/)[0] || t.exempel)]).slice(0, 4);
-    }
-    frågor.push({ fråga, svar, alt: shuffle(alt), typAv });
+      // Välj frågetyp slumpmässigt
+      const frågetyper = [
+        'Vilken kategori tillhör ölstilen',
+        'Vilket OG-intervall har ölstilen',
+        'Vilket IBU-intervall har ölstilen',
+        'Vilken alkoholhalt (ABV) har ölstilen',
+        'Vilken färg har ölstilen',
+        'Vilken är rätt profilbeskrivning?',
+        'Vilket är ett exempel på denna stil?'
+      ];
+      const typAv = shuffle(frågetyper)[0];
+      let fråga = '', svar = '', alt = [];
+      if (typAv === 'Vilken kategori tillhör ölstilen') {
+        if (!typ.kategori) return;
+        fråga = `Vilken kategori tillhör ölstilen <b>${typ.namn}</b>?`;
+        svar = typ.kategori;
+        alt = [typ.kategori, ...allaTyper.filter(t => t.kategori && t.kategori !== typ.kategori).map(t => t.kategori)];
+      } else if (typAv === 'Vilket OG-intervall har ölstilen') {
+        if (!typ.OG_MIN || !typ.OG_MAX || typ.OG_MIN === '-' || typ.OG_MAX === '-') return;
+        fråga = `Vilket OG-intervall har <b>${typ.namn}</b>?`;
+        svar = `${typ.OG_MIN} – ${typ.OG_MAX}`;
+        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.OG_MIN && t.OG_MAX && t.OG_MIN !== '-' && t.OG_MAX !== '-').map(t => `${t.OG_MIN} – ${t.OG_MAX}`)];
+      } else if (typAv === 'Vilket IBU-intervall har ölstilen') {
+        if (!typ.IBU_MIN || !typ.IBU_MAX || typ.IBU_MIN === '-' || typ.IBU_MAX === '-') return;
+        fråga = `Vilket IBU-intervall har <b>${typ.namn}</b>?`;
+        svar = `${typ.IBU_MIN} – ${typ.IBU_MAX}`;
+        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.IBU_MIN && t.IBU_MAX && t.IBU_MIN !== '-' && t.IBU_MAX !== '-').map(t => `${t.IBU_MIN} – ${t.IBU_MAX}`)];
+      } else if (typAv === 'Vilken alkoholhalt (ABV) har ölstilen') {
+        if (!typ.ABV_MIN || !typ.ABV_MAX || typ.ABV_MIN === '-' || typ.ABV_MAX === '-') return;
+        fråga = `Vilket ABV-intervall har <b>${typ.namn}</b>?`;
+        svar = `${typ.ABV_MIN} – ${typ.ABV_MAX} %`;
+        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.ABV_MIN && t.ABV_MAX && t.ABV_MIN !== '-' && t.ABV_MAX !== '-').map(t => `${t.ABV_MIN} – ${t.ABV_MAX} %`)];
+      } else if (typAv === 'Vilken färg har ölstilen') {
+        if (!typ.COLOR_MIN || !typ.COLOR_MAX || typ.COLOR_MIN === '-' || typ.COLOR_MAX === '-') return;
+        fråga = `Vilket färgintervall har <b>${typ.namn}</b>?`;
+        svar = `${typ.COLOR_MIN} – ${typ.COLOR_MAX}`;
+        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.COLOR_MIN && t.COLOR_MAX && t.COLOR_MIN !== '-' && t.COLOR_MAX !== '-').map(t => `${t.COLOR_MIN} – ${t.COLOR_MAX}`)];
+      } else if (typAv === 'Vilken är rätt profilbeskrivning?') {
+        if (!typ.profil || typ.profil.trim() === '') return;
+        fråga = `Vilken är rätt profilbeskrivning för <b>${typ.namn}</b>?`;
+        svar = typ.profil;
+        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.profil && t.profil.trim() !== '').map(t => t.profil)];
+      } else if (typAv === 'Vilket är ett exempel på denna stil?') {
+        const exSvar = typ.exempel.split(/[;,\n]/)[0]?.trim() || '';
+        if (!exSvar) return;
+        fråga = `Vilket är ett exempel på <b>${typ.namn}</b>?`;
+        svar = exSvar;
+        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.exempel && t.exempel.trim() !== '').map(t => t.exempel.split(/[;,\n]/)[0]?.trim() || '')];
+      }
+      // Filtrera bort tomma och dubbletter
+      alt = alt.filter(a => a && a.trim() !== '');
+      alt = [...new Set(alt)];
+      // Ta max 4 unika alternativ och blanda dem
+      alt = shuffle(alt).slice(0, 4);
+      if (alt.length < 2) return; // Skapa inte frågor med för få alternativ
+      frågor.push({ fråga, svar, alt, typAv });
   });
   return frågor;
 }
@@ -338,7 +355,7 @@ function visaQuizFråga() {
     <div class="fw-bold fs-5">Fråga ${quizIndex + 1} av 10</div>
   </div>
   <div class="mb-3 fs-5">${q.fråga}</div>
-  <div class="list-group mb-4">`;
+  <div class="list-group mb-4" id="quizAlternativ">`;
   q.alt.forEach((alt, i) => {
     html += `<button class="list-group-item list-group-item-action py-3" onclick="svaraQuiz(${i})">${alt}</button>`;
   });
@@ -352,8 +369,20 @@ function svaraQuiz(i) {
   const valt = q.alt[i];
   quizSvar.push({ fråga: q.fråga, rätt: q.svar, valt });
   if (valt === q.svar) quizRätt++;
-  quizIndex++;
-  visaQuizFråga();
+  // Visa feedback direkt
+  const btns = document.querySelectorAll('#quizAlternativ button');
+  btns.forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === i && q.alt[idx] === q.svar) {
+      btn.classList.add('list-group-item-success');
+    } else if (idx === i && q.alt[idx] !== q.svar) {
+      btn.classList.add('list-group-item-danger');
+    }
+  });
+  setTimeout(() => {
+    quizIndex++;
+    visaQuizFråga();
+  }, 1200);
 }
 
 function visaQuizResultat() {

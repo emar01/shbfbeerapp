@@ -10,32 +10,42 @@
 </head>
 <body>
   <header class="bg-beige py-4 mb-4 shadow-sm">
-    <div class="container text-center">
-      <img src="../assets/logo.png" alt="Logo" width="80" height="80" class="mb-2">
-      <h1 class="display-5 fw-bold text-orange mb-0" style="letter-spacing:1px;">Beer Styles 2020</h1>
-      <p class="lead text-dark">En guide till SHBF:s ölstilar 2020</p>
+    <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3 mb-2 mb-md-0">
+        <img src="../assets/logo.png" alt="Logo" width="70" height="70" class="me-2">
+        <div>
+          <h1 class="display-6 fw-bold text-orange mb-0" style="letter-spacing:1px;">Beer Styles 2020</h1>
+          <p class="lead text-dark mb-0">En guide till SHBF:s ölstilar 2020</p>
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <button id="theme-toggle-btn" class="btn btn-lg btn-outline-secondary">
+          <i class="bi bi-moon-stars-fill"></i>
+        </button>
+        <button id="quizBtn" class="btn btn-lg btn-orange d-flex flex-column align-items-center ms-2" style="min-width:100px;">
+          <img src="../assets/quiz.jpeg" alt="Quiz" width="36" height="36" class="mb-1 rounded-circle border border-2 border-orange" style="background:#fff;">
+          <span class="fw-bold">Quiz</span>
+        </button>
+      </div>
     </div>
   </header>
   <main>
     <div class="container mb-4">
       <div class="row justify-content-center">
         <div class="col-lg-8 col-md-10">
-          <div class="mb-3">
-            <select id="kallaSelect" class="form-select form-select-lg">
-              <option value="SHBF">SHBF</option>
-              <option value="BJCP">BJCP</option>
-            </select>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <input type="text" class="form-control form-control-lg rounded-pill px-4 shadow-sm w-75" id="searchInput" placeholder="Sök kategori eller typ..." aria-label="Sök">
-            <div class="d-flex">
-              <button id="theme-toggle-btn" class="btn btn-lg btn-outline-secondary ms-3">
-                <i class="bi bi-moon-stars-fill"></i>
-              </button>
-              <button id="quizBtn" class="btn btn-lg btn-orange ms-3 d-flex flex-column align-items-center" style="min-width:110px;">
-                <img src="../assets/quiz.jpeg" alt="Quiz" width="40" height="40" class="mb-1 rounded-circle border border-2 border-orange" style="background:#fff;">
-                <span class="fw-bold">Quiz</span>
-              </button>
+          <div class="d-flex flex-column align-items-center gap-2 mb-2">
+            <div class="input-group input-group-lg search-group w-100 justify-content-center" style="max-width:420px;">
+              <span class="input-group-text bg-white border-end-0 rounded-pill-start" id="search-icon" style="border-right:0;">
+                <i class="bi bi-search text-orange"></i>
+              </span>
+              <input type="text" class="form-control form-control-lg rounded-pill rounded-pill-end px-4 shadow-sm border-start-0" id="searchInput" placeholder="Sök kategori eller typ..." aria-label="Sök" style="font-size:1.3rem; border-left:0;">
+            </div>
+            <div class="w-100 d-flex justify-content-center align-items-center gap-2 mt-2">
+              <label for="kallaSelect" class="fw-bold text-orange mb-0" style="font-size:1.1rem; letter-spacing:0.5px;">Typdefinition:</label>
+              <select id="kallaSelect" class="form-select form-select-lg bg-orange text-white fw-bold shadow-sm kalla-konfig ms-2" style="max-width:220px; border:2px solid var(--primary-color);">
+                <option value="SHBF">SHBF</option>
+                <option value="BJCP">BJCP</option>
+              </select>
             </div>
           </div>
           <div id="accordionKategori" class="accordion"></div>

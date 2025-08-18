@@ -1,3 +1,43 @@
+/* Sökfält med ikon */
+
+.search-group .input-group-text {
+  border-radius: 2rem 0 0 2rem !important;
+  background: #fff;
+  border-right: none !important;
+  border-color: var(--primary-color);
+}
+.search-group .form-control {
+  border-radius: 0 2rem 2rem 0 !important;
+  border-left: none !important;
+  margin-left: -1px;
+}
+.search-group .form-control:focus {
+  box-shadow: 0 0 0 0.2rem #d35c1c44;
+  border-color: var(--primary-color);
+}
+.search-group .bi-search {
+  font-size: 1.5rem;
+}
+
+/* Väljare under sökfältet */
+.kalla-konfig {
+  margin-top: 0.2rem;
+  font-size: 1.1rem;
+  box-shadow: 0 1px 4px #d35c1c22;
+}
+/* Anpassning för select (SHBF/BJCP) */
+#kallaSelect.bg-orange {
+  background: var(--primary-color) !important;
+  color: #fff !important;
+  border: 2px solid var(--primary-color) !important;
+}
+#kallaSelect.bg-orange option {
+  color: #222;
+}
+#kallaSelect:focus {
+  box-shadow: 0 0 0 0.2rem #d35c1c44;
+  border-color: var(--primary-color);
+}
 /* Datavy staplar för OG, FG, ABV, IBU, Färg */
 .databar-container {
   margin: 1.5rem 0 1rem 0;
