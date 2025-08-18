@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Öltypdefinitioner 2020</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="bg-beige py-4 mb-4 shadow-sm">
+    <div class="container text-center">
+      <img src="../assets/logo.png" alt="Logo" width="80" height="80" class="mb-2">
+      <h1 class="display-5 fw-bold text-orange mb-0" style="letter-spacing:1px;">Beer Styles 2020</h1>
+      <p class="lead text-dark">En guide till SHBF:s ölstilar 2020</p>
+    </div>
+  </header>
+  <main>
+    <div class="container mb-4">
+      <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <input type="text" class="form-control form-control-lg rounded-pill px-4 shadow-sm w-75" id="searchInput" placeholder="Sök kategori eller typ..." aria-label="Sök">
+            <div class="d-flex">
+              <button id="theme-toggle-btn" class="btn btn-lg btn-outline-secondary ms-3">
+                <i class="bi bi-moon-stars-fill"></i>
+              </button>
+              <button id="quizBtn" class="btn btn-lg btn-orange ms-3 d-flex flex-column align-items-center" style="min-width:110px;">
+                <img src="../assets/quiz.jpeg" alt="Quiz" width="40" height="40" class="mb-1 rounded-circle border border-2 border-orange" style="background:#fff;">
+                <span class="fw-bold">Quiz</span>
+              </button>
+            </div>
+          </div>
+          <div id="accordionKategori" class="accordion"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal för quiz -->
+  <div class="modal fade" id="quizModal" tabindex="-1" aria-labelledby="quizModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <div class="modal-header bg-orange text-white rounded-top-4">
+          <h2 class="modal-title fs-3 fw-bold mb-0" id="quizModalLabel">Quiz</h2>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Stäng"></button>
+        </div>
+        <div class="modal-body p-4" id="quizContent">
+          <!-- Quiz-frågor och flöde renderas här av app.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal för typdetaljer -->
+  <div class="modal fade" id="typModal" tabindex="-1" aria-labelledby="typModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content rounded-4">
+        <div class="modal-header bg-orange text-white rounded-top-4">
+          <h2 class="modal-title fs-3 fw-bold mb-0" id="typModalLabel">Typdetaljer</h2>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Stäng"></button>
+        </div>
+        <div class="modal-body p-4" id="typDetaljer"></div>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
