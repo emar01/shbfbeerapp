@@ -172,22 +172,14 @@ function renderAccordion(kategorier) {
 function visaTypDetalj(katNamn, typNamn, el) {
   const kategori = window.kategorier.find(k => k.namn === katNamn);
   const typ = kategori.typer.find(t => t.namn === typNamn);
-  // Ny datavy med staplar för OG, FG, ABV, IBU, Färg (EBC/SRM)
-  const harProfil = typ.profil && typ.profil.trim() !== '';
-  const harExempel = typ.exempel && typ.exempel.trim() !== '';
-  const harNoter = typ.noter && typ.noter.trim() !== '';
-
   // Hjälpfunktion för stapel
   function stapel(label, min, max, enhet, fargklass) {
     if (!min && !max) return '';
     let minVal = parseFloat(min.replace(',', '.'));
     let maxVal = parseFloat(max.replace(',', '.'));
     if (isNaN(minVal) || isNaN(maxVal)) return '';
-    // Skala för stapel (0-100%)
-    let range = maxVal - minVal;
     let minPos = 0;
     let maxPos = 100;
-    // Visa värden på stapeln
     return `<div class="databar-row">
       <span class="databar-label ${fargklass}">${label}</span>
       <div class="databar-bar">
@@ -198,32 +190,24 @@ function visaTypDetalj(katNamn, typNamn, el) {
     </div>`;
   }
 
-  const datavy = `
-    <div class="databar-container mb-2">
-      ${stapel('ABV', typ.ABV_MIN, typ.ABV_MAX, '%', 'databar-abv')}
-      ${stapel('OG', typ.OG_MIN, typ.OG_MAX, '', 'databar-og')}
-      ${stapel('FG', typ.FG_MIN, typ.FG_MAX, '', 'databar-fg')}
-      ${stapel('Färg', typ.COLOR_MIN, typ.COLOR_MAX, '', 'databar-color')}
-      ${stapel('IBU', typ.IBU_MIN, typ.IBU_MAX, '', 'databar-ibu')}
-    </div>
-  `;
-
-  const detaljer = `
-    <div class="row g-3 align-items-stretch">
-      <div class="col-12 col-md-5 col-lg-4 d-flex flex-column align-items-start justify-content-start border-end pe-md-4 mb-3 mb-md-0">
-        <span class="badge rounded-pill bg-orange fs-3 px-4 py-2 mb-2 align-self-center">${typ.bokstav}</span>
-        <h4 class="mb-1 mt-2 w-100 text-center text-md-start">${typ.namn}</h4>
-        <div class="text-muted mb-2 w-100 text-center text-md-start">${typ.kategori} (${typ.kategoriNummer})</div>
-        ${datavy}
-      </div>
-      <div class="col-12 col-md-7 col-lg-8 d-flex flex-column justify-content-start ps-md-4">
-        ${harNoter ? `<div class=\"mb-3\"><b>Beskrivning:</b><br><span>${typ.noter.replaceAll('\\n', '<br>')}</span></div>` : ''}
-        ${harProfil ? `<div class=\"mb-3\"><b>Profil:</b><br><span>${typ.profil.replaceAll('\\n', '<br>')}</span></div>` : ''}
-        ${harExempel ? `<div class=\"mb-3\"><b>Exempel:</b><br><span>${typ.exempel.replaceAll('\\n', '<br>')}</span></div>` : ''}
-      </div>
-    </div>
-  `;
-  document.getElementById('typDetaljer').innerHTML = detaljer;
+  // Rendera modalinnehåll från template
+  const template = document.getElementById('typModalTemplate');
+  const clone = template.content.cloneNode(true);
+  clone.querySelector('[data-bokstav]').textContent = typ.bokstav;
+  clone.querySelector('[data-namn]').textContent = typ.namn;
+  clone.querySelector('[data-kategori]').textContent = `${typ.kategori} (${typ.kategoriNummer})`;
+  clone.querySelector('[data-dataview]').innerHTML =
+    stapel('ABV', typ.ABV_MIN, typ.ABV_MAX, '%', 'databar-abv') +
+    stapel('OG', typ.OG_MIN, typ.OG_MAX, '', 'databar-og') +
+    stapel('FG', typ.FG_MIN, typ.FG_MAX, '', 'databar-fg') +
+    stapel('Färg', typ.COLOR_MIN, typ.COLOR_MAX, '', 'databar-color') +
+    stapel('IBU', typ.IBU_MIN, typ.IBU_MAX, '', 'databar-ibu');
+  clone.querySelector('[data-noter]').innerHTML = (typ.noter && typ.noter.trim() !== '') ? `<b>Beskrivning:</b><br><span>${typ.noter.replaceAll('\\n', '<br>')}</span>` : '';
+  clone.querySelector('[data-profil]').innerHTML = (typ.profil && typ.profil.trim() !== '') ? `<b>Profil:</b><br><span>${typ.profil.replaceAll('\\n', '<br>')}</span>` : '';
+  clone.querySelector('[data-exempel]').innerHTML = (typ.exempel && typ.exempel.trim() !== '') ? `<b>Exempel:</b><br><span>${typ.exempel.replaceAll('\\n', '<br>')}</span>` : '';
+  const container = document.getElementById('typDetaljer');
+  container.innerHTML = '';
+  container.appendChild(clone);
   const modal = new bootstrap.Modal(document.getElementById('typModal'));
   modal.show();
 }

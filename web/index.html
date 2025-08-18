@@ -1,3 +1,29 @@
+  <!-- ======= Modal Templates ======= -->
+  <template id="typModalTemplate">
+    <div class="row g-3 align-items-stretch">
+      <div class="col-12 col-md-5 col-lg-4 d-flex flex-column align-items-start justify-content-start border-end pe-md-4 mb-3 mb-md-0">
+        <span class="badge rounded-pill bg-orange fs-3 px-4 py-2 mb-2 align-self-center" data-bokstav></span>
+        <h4 class="mb-1 mt-2 w-100 text-center text-md-start" data-namn></h4>
+        <div class="text-muted mb-2 w-100 text-center text-md-start" data-kategori></div>
+        <div class="databar-container mb-2" data-dataview></div>
+      </div>
+      <div class="col-12 col-md-7 col-lg-8 d-flex flex-column justify-content-start ps-md-4">
+        <div class="mb-3" data-noter></div>
+        <div class="mb-3" data-profil></div>
+        <div class="mb-3" data-exempel></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="quizModalTemplate">
+    <div class="text-center mb-4">
+      <img src="../assets/quiz2.jpeg" alt="Quiz" width="60" height="60" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
+      <div class="fw-bold fs-5" data-fraga-raknare></div>
+    </div>
+    <div class="mb-3 fs-5" data-fraga-text></div>
+    <div class="list-group mb-4" id="quizAlternativ"></div>
+    <div class="text-end"><span class="text-muted" data-fragetype></span></div>
+  </template>
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -64,13 +90,10 @@
           <h2 class="modal-title app-modal-title" id="quizModalLabel">Quiz</h2>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Stäng"></button>
         </div>
-        <div class="modal-body app-modal-body" id="quizContent">
-          <!-- Quiz-frågor och flöde renderas här av app.js -->
-        </div>
+        <div class="modal-body app-modal-body" id="quizContent"></div>
       </div>
     </div>
   </div>
-  <!-- ======= Modal för typdetaljer ======= -->
   <div class="modal fade app-modal" id="typModal" tabindex="-1" aria-labelledby="typModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content app-modal-content">
