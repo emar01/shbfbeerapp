@@ -63,7 +63,7 @@ function renderAccordion(kategorier) {
   // Om det bara finns en "kategori" och den heter Sökresultat, visa typ-listan direkt
   if (kategorier.length === 1 && kategorier[0].namn === 'Sökresultat') {
     const typerList = kategorier[0].typer.map(typ => `
-      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${typ.kategori.replace(/'/g, "\\'")}', '${typ.namn.replace(/'/g, "\\'")}', this)">
+      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${typ.kategori.replace(/'/g, "\'")}', '${typ.namn.replace(/'/g, "\'")}', this)">
         <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typ.bokstav}</span>
         <span class="fw-semibold">${typ.namn}</span>
         <span class="text-muted ms-auto small">${typ.kategori}</span>
@@ -74,7 +74,7 @@ function renderAccordion(kategorier) {
   // Annars visa accordion som vanligt
   kategorier.forEach((kat, i) => {
     const typerList = kat.typer.map(typ => `
-      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${kat.namn.replace(/'/g, "\\'")}', '${typ.namn.replace(/'/g, "\\'")}', this)">
+      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${kat.namn.replace(/'/g, "\'")}', '${typ.namn.replace(/'/g, "\'")}', this)">
         <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typ.bokstav}</span>
         <span class="fw-semibold">${typ.namn}</span>
       </li>`).join('');
@@ -285,4 +285,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Quiz
   document.getElementById('quizBtn').addEventListener('click', startaQuiz);
+
+  // Theme toggler
+  const themeToggleBtn = document.getElementById('theme-toggle-btn');
+  const htmlEl = document.documentElement;
+
+  const savedTheme = 'light'; // Always start in light mode
+  htmlEl.setAttribute('data-bs-theme', savedTheme);
+  themeToggleBtn.querySelector('i').className = savedTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+
+  themeToggleBtn.addEventListener('click', () => {
+    const currentTheme = htmlEl.getAttribute('data-bs-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    htmlEl.setAttribute('data-bs-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    themeToggleBtn.querySelector('i').className = newTheme === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+  });
 });
