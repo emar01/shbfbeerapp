@@ -1,3 +1,20 @@
+/* Modal detaljvy layout */
+#typModal .modal-body {
+  min-height: 320px;
+}
+#typModal .databar-container {
+  width: 100%;
+  max-width: 340px;
+}
+#typModal .border-end {
+  border-right: 2px solid #f3e3d1 !important;
+}
+#typModal .col-md-7 {
+  min-width: 220px;
+}
+#typModal .col-md-5 {
+  min-width: 180px;
+}
 /* Sökfält med ikon */
 
 .search-group .input-group-text {

@@ -199,7 +199,7 @@ function visaTypDetalj(katNamn, typNamn, el) {
   }
 
   const datavy = `
-    <div class="databar-container">
+    <div class="databar-container mb-2">
       ${stapel('ABV', typ.ABV_MIN, typ.ABV_MAX, '%', 'databar-abv')}
       ${stapel('OG', typ.OG_MIN, typ.OG_MAX, '', 'databar-og')}
       ${stapel('FG', typ.FG_MIN, typ.FG_MAX, '', 'databar-fg')}
@@ -209,14 +209,14 @@ function visaTypDetalj(katNamn, typNamn, el) {
   `;
 
   const detaljer = `
-    <div class="row g-4 align-items-center">
-      <div class="col-md-6">
-        <span class="badge rounded-pill bg-orange fs-3 px-4 py-2 mb-2">${typ.bokstav}</span>
-        <h4 class="mb-2 mt-2">${typ.namn}</h4>
-        <div class="text-muted mb-2">${typ.kategori} (${typ.kategoriNummer})</div>
+    <div class="row g-3 align-items-stretch">
+      <div class="col-12 col-md-5 col-lg-4 d-flex flex-column align-items-start justify-content-start border-end pe-md-4 mb-3 mb-md-0">
+        <span class="badge rounded-pill bg-orange fs-3 px-4 py-2 mb-2 align-self-center">${typ.bokstav}</span>
+        <h4 class="mb-1 mt-2 w-100 text-center text-md-start">${typ.namn}</h4>
+        <div class="text-muted mb-2 w-100 text-center text-md-start">${typ.kategori} (${typ.kategoriNummer})</div>
         ${datavy}
       </div>
-      <div class="col-md-6">
+      <div class="col-12 col-md-7 col-lg-8 d-flex flex-column justify-content-start ps-md-4">
         ${harNoter ? `<div class=\"mb-3\"><b>Beskrivning:</b><br><span>${typ.noter.replaceAll('\\n', '<br>')}</span></div>` : ''}
         ${harProfil ? `<div class=\"mb-3\"><b>Profil:</b><br><span>${typ.profil.replaceAll('\\n', '<br>')}</span></div>` : ''}
         ${harExempel ? `<div class=\"mb-3\"><b>Exempel:</b><br><span>${typ.exempel.replaceAll('\\n', '<br>')}</span></div>` : ''}
