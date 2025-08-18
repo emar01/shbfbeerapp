@@ -1,3 +1,56 @@
+/* Datavy staplar för OG, FG, ABV, IBU, Färg */
+.databar-container {
+  margin: 1.5rem 0 1rem 0;
+}
+.databar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.databar-label {
+  width: 3.5rem;
+  font-weight: bold;
+  text-align: right;
+  margin-right: 0.7rem;
+  border-radius: 4px;
+  padding: 2px 7px;
+  color: #fff;
+  font-size: 1rem;
+}
+.databar-abv { background: #7cb342; }
+.databar-og { background: #bdbdbd; }
+.databar-fg { background: #64b5f6; }
+.databar-color { background: #fbc02d; }
+.databar-ibu { background: #e57373; }
+.databar-bar {
+  position: relative;
+  flex: 1;
+  height: 1.7rem;
+  background: #e8f5e9;
+  border-radius: 6px;
+  margin-left: 0.2rem;
+  margin-right: 0.2rem;
+  display: flex;
+  align-items: center;
+}
+.databar-fill {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: #aed581;
+  border-radius: 6px;
+  z-index: 1;
+}
+.databar-min, .databar-max {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.95rem;
+  color: #333;
+  z-index: 2;
+}
+.databar-min { left: 0.5rem; }
+.databar-max { right: 0.5rem; }
 :root {
   --primary-color: #d35c1c;
   --secondary-color: #ffe0b2;

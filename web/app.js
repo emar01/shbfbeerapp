@@ -172,30 +172,54 @@ function renderAccordion(kategorier) {
 function visaTypDetalj(katNamn, typNamn, el) {
   const kategori = window.kategorier.find(k => k.namn === katNamn);
   const typ = kategori.typer.find(t => t.namn === typNamn);
-  // Förbättrad detaljvy för BJCP: visa fler fält och tydligare etiketter
+  // Ny datavy med staplar för OG, FG, ABV, IBU, Färg (EBC/SRM)
   const harProfil = typ.profil && typ.profil.trim() !== '';
   const harExempel = typ.exempel && typ.exempel.trim() !== '';
   const harNoter = typ.noter && typ.noter.trim() !== '';
+
+  // Hjälpfunktion för stapel
+  function stapel(label, min, max, enhet, fargklass) {
+    if (!min && !max) return '';
+    let minVal = parseFloat(min.replace(',', '.'));
+    let maxVal = parseFloat(max.replace(',', '.'));
+    if (isNaN(minVal) || isNaN(maxVal)) return '';
+    // Skala för stapel (0-100%)
+    let range = maxVal - minVal;
+    let minPos = 0;
+    let maxPos = 100;
+    // Visa värden på stapeln
+    return `<div class="databar-row">
+      <span class="databar-label ${fargklass}">${label}</span>
+      <div class="databar-bar">
+        <div class="databar-fill" style="left:${minPos}%;width:${maxPos-minPos}%;"></div>
+        <span class="databar-min">${minVal}${enhet}</span>
+        <span class="databar-max">${maxVal}${enhet}</span>
+      </div>
+    </div>`;
+  }
+
+  const datavy = `
+    <div class="databar-container">
+      ${stapel('ABV', typ.ABV_MIN, typ.ABV_MAX, '%', 'databar-abv')}
+      ${stapel('OG', typ.OG_MIN, typ.OG_MAX, '', 'databar-og')}
+      ${stapel('FG', typ.FG_MIN, typ.FG_MAX, '', 'databar-fg')}
+      ${stapel('Färg', typ.COLOR_MIN, typ.COLOR_MAX, '', 'databar-color')}
+      ${stapel('IBU', typ.IBU_MIN, typ.IBU_MAX, '', 'databar-ibu')}
+    </div>
+  `;
+
   const detaljer = `
     <div class="row g-4 align-items-center">
-      <div class="col-md-5 text-center">
+      <div class="col-md-6">
         <span class="badge rounded-pill bg-orange fs-3 px-4 py-2 mb-2">${typ.bokstav}</span>
         <h4 class="mb-2 mt-2">${typ.namn}</h4>
         <div class="text-muted mb-2">${typ.kategori} (${typ.kategoriNummer})</div>
-        <table class="table table-sm table-bordered align-middle mb-3" style="background:#fff;">
-          <tbody>
-            <tr><th>OG (Original Gravity)</th><td>${typ.OG_MIN || '-'} – ${typ.OG_MAX || '-'}</td></tr>
-            <tr><th>FG (Final Gravity)</th><td>${typ.FG_MIN || '-'} – ${typ.FG_MAX || '-'}</td></tr>
-            <tr><th>ABV (% vol)</th><td>${typ.ABV_MIN || '-'} – ${typ.ABV_MAX || '-'}</td></tr>
-            <tr><th>IBU (Bitterhet)</th><td>${typ.IBU_MIN || '-'} – ${typ.IBU_MAX || '-'}</td></tr>
-            <tr><th>Färg (SRM)</th><td>${typ.COLOR_MIN || '-'} – ${typ.COLOR_MAX || '-'}</td></tr>
-          </tbody>
-        </table>
+        ${datavy}
       </div>
-      <div class="col-md-7">
-        ${harNoter ? `<div class="mb-3"><b>Beskrivning:</b><br><span>${typ.noter.replaceAll('\n', '<br>')}</span></div>` : ''}
-        ${harProfil ? `<div class="mb-3"><b>Profil:</b><br><span>${typ.profil.replaceAll('\n', '<br>')}</span></div>` : ''}
-        ${harExempel ? `<div class="mb-3"><b>Exempel:</b><br><span>${typ.exempel.replaceAll('\n', '<br>')}</span></div>` : ''}
+      <div class="col-md-6">
+        ${harNoter ? `<div class=\"mb-3\"><b>Beskrivning:</b><br><span>${typ.noter.replaceAll('\\n', '<br>')}</span></div>` : ''}
+        ${harProfil ? `<div class=\"mb-3\"><b>Profil:</b><br><span>${typ.profil.replaceAll('\\n', '<br>')}</span></div>` : ''}
+        ${harExempel ? `<div class=\"mb-3\"><b>Exempel:</b><br><span>${typ.exempel.replaceAll('\\n', '<br>')}</span></div>` : ''}
       </div>
     </div>
   `;

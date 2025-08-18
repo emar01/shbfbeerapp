@@ -1,3 +1,6 @@
+# Datavy för OG, FG, ABV, IBU, Färg
+
+När du klickar på en ölstil visas nu OG, FG, ABV, IBU och Färg som horisontella staplar, inspirerat av bilden `assets/data-view.jpeg`. Varje stapel visar min- och maxvärde samt etikett till vänster. Endast de fält som finns i XML visas. Färger och layout följer appens tema.
 # Välja stilguidekälla
 
 Appen stödjer flera olika stilguide-filer i `db`-mappen. Du kan välja mellan t.ex:
