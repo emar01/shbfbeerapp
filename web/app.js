@@ -3,7 +3,7 @@
 
 // Ladda och parsa beerXML-generate.xml
 async function hamtaData() {
-  const res = await fetch('../db/beerXML-generate.xml');
+  const res = await fetch('https://raw.githubusercontent.com/emar01/shbfbeerapp/main/db/beerXML-generate.xml');
   const xmlText = await res.text();
   const parser = new DOMParser();
   const xml = parser.parseFromString(xmlText, 'text/xml');
