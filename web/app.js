@@ -74,23 +74,45 @@ function parseBeerStyles(xml) {
       subNodes.forEach(sub => {
         const subNamn = sub.querySelector('name')?.textContent || '';
         const subId = sub.getAttribute('id') || '';
+        // Hämta notes/body
+        let noter = '';
+        let bodyNode = sub.querySelector('body');
+        if (bodyNode) {
+          noter = bodyNode.innerHTML
+            .replace(/<br\s*\/?>(\s*)?/gi, '\n')
+            .replace(/<[^>]+>/g, '')
+            .trim();
+        }
+        // Hämta stats
+        let OG_MIN = '', OG_MAX = '', FG_MIN = '', FG_MAX = '', ABV_MIN = '', ABV_MAX = '', IBU_MIN = '', IBU_MAX = '', COLOR_MIN = '', COLOR_MAX = '';
+        const statsNodes = sub.querySelectorAll('stats');
+        statsNodes.forEach(stat => {
+          const typ = stat.querySelector('type')?.textContent?.toLowerCase() || '';
+          const low = stat.querySelector('low')?.textContent || '';
+          const high = stat.querySelector('high')?.textContent || '';
+          if (typ === 'og') { OG_MIN = low; OG_MAX = high; }
+          if (typ === 'fg') { FG_MIN = low; FG_MAX = high; }
+          if (typ === 'abv') { ABV_MIN = low; ABV_MAX = high; }
+          if (typ === 'ibu') { IBU_MIN = low; IBU_MAX = high; }
+          if (typ === 'srm') { COLOR_MIN = low; COLOR_MAX = high; }
+        });
         kategorierMap[kategoriKey].typer.push({
           namn: subNamn,
           bokstav: subId.replace(/^[0-9]+/, ''),
           kategori: kategoriNamn,
           kategoriNummer: kategoriNummer,
           typ: '',
-          OG_MIN: '',
-          OG_MAX: '',
-          FG_MIN: '',
-          FG_MAX: '',
-          IBU_MIN: '',
-          IBU_MAX: '',
-          COLOR_MIN: '',
-          COLOR_MAX: '',
-          ABV_MIN: '',
-          ABV_MAX: '',
-          noter: '',
+          OG_MIN,
+          OG_MAX,
+          FG_MIN,
+          FG_MAX,
+          IBU_MIN,
+          IBU_MAX,
+          COLOR_MIN,
+          COLOR_MAX,
+          ABV_MIN,
+          ABV_MAX,
+          noter,
           profil: '',
           exempel: ''
         });
@@ -150,6 +172,10 @@ function renderAccordion(kategorier) {
 function visaTypDetalj(katNamn, typNamn, el) {
   const kategori = window.kategorier.find(k => k.namn === katNamn);
   const typ = kategori.typer.find(t => t.namn === typNamn);
+  // Förbättrad detaljvy för BJCP: visa fler fält och tydligare etiketter
+  const harProfil = typ.profil && typ.profil.trim() !== '';
+  const harExempel = typ.exempel && typ.exempel.trim() !== '';
+  const harNoter = typ.noter && typ.noter.trim() !== '';
   const detaljer = `
     <div class="row g-4 align-items-center">
       <div class="col-md-5 text-center">
@@ -158,18 +184,18 @@ function visaTypDetalj(katNamn, typNamn, el) {
         <div class="text-muted mb-2">${typ.kategori} (${typ.kategoriNummer})</div>
         <table class="table table-sm table-bordered align-middle mb-3" style="background:#fff;">
           <tbody>
-            <tr><th>OG</th><td>${typ.OG_MIN || '-'} – ${typ.OG_MAX || '-'}</td></tr>
-            <tr><th>FG</th><td>${typ.FG_MIN || '-'} – ${typ.FG_MAX || '-'}</td></tr>
-            <tr><th>ABV</th><td>${typ.ABV_MIN || '-'} – ${typ.ABV_MAX || '-'} %</td></tr>
-            <tr><th>IBU</th><td>${typ.IBU_MIN || '-'} – ${typ.IBU_MAX || '-'}</td></tr>
-            <tr><th>Färg</th><td>${typ.COLOR_MIN || '-'} – ${typ.COLOR_MAX || '-'}</td></tr>
+            <tr><th>OG (Original Gravity)</th><td>${typ.OG_MIN || '-'} – ${typ.OG_MAX || '-'}</td></tr>
+            <tr><th>FG (Final Gravity)</th><td>${typ.FG_MIN || '-'} – ${typ.FG_MAX || '-'}</td></tr>
+            <tr><th>ABV (% vol)</th><td>${typ.ABV_MIN || '-'} – ${typ.ABV_MAX || '-'}</td></tr>
+            <tr><th>IBU (Bitterhet)</th><td>${typ.IBU_MIN || '-'} – ${typ.IBU_MAX || '-'}</td></tr>
+            <tr><th>Färg (SRM)</th><td>${typ.COLOR_MIN || '-'} – ${typ.COLOR_MAX || '-'}</td></tr>
           </tbody>
         </table>
       </div>
       <div class="col-md-7">
-        <div class="mb-3"><b>Noter:</b><br><span>${typ.noter.replaceAll('\n', '<br>')}</span></div>
-        <div class="mb-3"><b>Profil:</b><br><span>${typ.profil.replaceAll('\n', '<br>')}</span></div>
-        <div class="mb-3"><b>Exempel:</b><br><span>${typ.exempel.replaceAll('\n', '<br>')}</span></div>
+        ${harNoter ? `<div class="mb-3"><b>Beskrivning:</b><br><span>${typ.noter.replaceAll('\n', '<br>')}</span></div>` : ''}
+        ${harProfil ? `<div class="mb-3"><b>Profil:</b><br><span>${typ.profil.replaceAll('\n', '<br>')}</span></div>` : ''}
+        ${harExempel ? `<div class="mb-3"><b>Exempel:</b><br><span>${typ.exempel.replaceAll('\n', '<br>')}</span></div>` : ''}
       </div>
     </div>
   `;
