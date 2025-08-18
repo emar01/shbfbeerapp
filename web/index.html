@@ -1,4 +1,4 @@
-  <!-- ======= Modal Templates ======= -->
+<!-- ======= Modal Templates ======= -->
   <template id="typModalTemplate">
     <div class="row g-3 align-items-stretch">
       <div class="col-12 col-md-5 col-lg-4 d-flex flex-column align-items-start justify-content-start border-end pe-md-4 mb-3 mb-md-0">
@@ -46,13 +46,16 @@
         </div>
       </div>
       <div class="header-actions">
-        <button id="theme-toggle-btn" class="btn btn-lg btn-outline-secondary">
+        <button id="theme-toggle-btn" class="btn btn-lg btn-orange">
           <i class="bi bi-moon-stars-fill"></i>
         </button>
-        <button id="quizBtn" class="btn btn-lg btn-orange quiz-btn">
-          <img src="../assets/quiz.jpeg" alt="Quiz" class="quiz-img">
-          <span class="fw-bold">Quiz</span>
+        <button id="quizBtn" class="btn btn-lg btn-orange">
+          <i class="bi bi-lightbulb-fill"></i>
         </button>
+        <button id="nameGenBtn" class="btn btn-lg btn-orange">
+          <i class="bi bi-magic"></i>
+        </button>
+        
       </div>
     </div>
   </header>
@@ -105,6 +108,27 @@
       </div>
     </div>
   </div>
+
+  <!-- ======= Modal för namngenerator ======= -->
+  <div class="modal fade app-modal" id="nameGenModal" tabindex="-1" aria-labelledby="nameGenModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content app-modal-content">
+        <div class="modal-header app-modal-header">
+          <h2 class="modal-title app-modal-title" id="nameGenModalLabel">Ölnamnsgenerator</h2>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Stäng"></button>
+        </div>
+        <div class="modal-body app-modal-body text-center">
+          <p class="lead">Här är ett förslag på ett öl-namn:</p>
+          <h3 id="beerNameOutput" class="display-4 fw-bold text-orange my-4">Klicka på knappen för att generera ett namn</h3>
+          <button id="generateNameBtn" class="btn btn-lg btn-orange">
+            <i class="bi bi-dice-5-fill me-2"></i>
+            Generera nytt namn
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="app.js"></script>
 </body>

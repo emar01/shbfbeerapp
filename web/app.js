@@ -136,7 +136,7 @@ function renderAccordion(kategorier) {
   // Om det bara finns en "kategori" och den heter Sökresultat, visa typ-listan direkt
   if (kategorier.length === 1 && kategorier[0].namn === 'Sökresultat') {
     const typerList = kategorier[0].typer.map(typ => `
-      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${typ.kategori.replace(/'/g, "\'")}', '${typ.namn.replace(/'/g, "\'")}', this)">
+      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${typ.kategori.replace(/'/g, "'")}', '${typ.namn.replace(/'/g, "'")}', this)">
         <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typ.bokstav}</span>
         <span class="fw-semibold">${typ.namn}</span>
         <span class="text-muted ms-auto small">${typ.kategori}</span>
@@ -147,7 +147,7 @@ function renderAccordion(kategorier) {
   // Annars visa accordion som vanligt
   kategorier.forEach((kat, i) => {
     const typerList = kat.typer.map(typ => `
-      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${kat.namn.replace(/'/g, "\'")}', '${typ.namn.replace(/'/g, "\'")}', this)">
+      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${kat.namn.replace(/'/g, "'")}', '${typ.namn.replace(/'/g, "'")}', this)">
         <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typ.bokstav}</span>
         <span class="fw-semibold">${typ.namn}</span>
       </li>`).join('');
@@ -202,9 +202,9 @@ function visaTypDetalj(katNamn, typNamn, el) {
     stapel('FG', typ.FG_MIN, typ.FG_MAX, '', 'databar-fg') +
     stapel('Färg', typ.COLOR_MIN, typ.COLOR_MAX, '', 'databar-color') +
     stapel('IBU', typ.IBU_MIN, typ.IBU_MAX, '', 'databar-ibu');
-  clone.querySelector('[data-noter]').innerHTML = (typ.noter && typ.noter.trim() !== '') ? `<b>Beskrivning:</b><br><span>${typ.noter.replaceAll('\\n', '<br>')}</span>` : '';
-  clone.querySelector('[data-profil]').innerHTML = (typ.profil && typ.profil.trim() !== '') ? `<b>Profil:</b><br><span>${typ.profil.replaceAll('\\n', '<br>')}</span>` : '';
-  clone.querySelector('[data-exempel]').innerHTML = (typ.exempel && typ.exempel.trim() !== '') ? `<b>Exempel:</b><br><span>${typ.exempel.replaceAll('\\n', '<br>')}</span>` : '';
+  clone.querySelector('[data-noter]').innerHTML = (typ.noter && typ.noter.trim() !== '') ? `<b>Beskrivning:</b><br><span>${typ.noter.replaceAll('\n', '<br>')}</span>` : '';
+  clone.querySelector('[data-profil]').innerHTML = (typ.profil && typ.profil.trim() !== '') ? `<b>Profil:</b><br><span>${typ.profil.replaceAll('\n', '<br>')}</span>` : '';
+  clone.querySelector('[data-exempel]').innerHTML = (typ.exempel && typ.exempel.trim() !== '') ? `<b>Exempel:</b><br><span>${typ.exempel.replaceAll('\n', '<br>')}</span>` : '';
   const container = document.getElementById('typDetaljer');
   container.innerHTML = '';
   container.appendChild(clone);
@@ -386,6 +386,32 @@ function visaQuizResultat() {
   document.getElementById('quizContent').innerHTML = html;
 }
 
+// Funktion för att generera ölnamn
+function generateBeerName() {
+  const adjectives = [
+    "Mörk", "Ljus", "Fruktig", "Bitter", "Söt", "Torr", "Fyllig", "Klar", "Grumlig",
+    "Frisk", "Kryddig", "Rökig", "Chokladig", "Kaffig", "Citrusig", "Tropisk",
+    "Vinter", "Sommar", "Höst", "Vår", "Natt", "Dag", "Morgon", "Kväll",
+    "Gyllene", "Rubinröd", "Svart", "Vit", "Blå", "Grön", "Röd", "Gul",
+    "Mystisk", "Legendarisk", "Forntida", "Modern", "Klassisk", "Innovativ",
+    "Vild", "Tam", "Stark", "Svag", "Långsam", "Snabb", "Tyst", "Högljudd"
+  ];
+
+  const nouns = [
+    "Ale", "Lager", "Stout", "Porter", "IPA", "Pilsner", "Veteöl", "Suröl",
+    "Brygd", "Elixir", "Nektar", "Dryck", "Essens", "Ande", "Själ", "Hjärta",
+    "Dröm", "Vision", "Saga", "Legend", "Myt", "Historia", "Äventyr", "Resa",
+    "Sol", "Måne", "Stjärna", "Moln", "Regn", "Snö", "Is", "Vind", "Storm",
+    "Berg", "Dal", "Sjö", "Flod", "Skog", "Träd", "Blomma", "Frukt", "Bär",
+    "Drake", "Lejon", "Varg", "Björn", "Örn", "Falk", "Uggla", "Räv", "Häst"
+  ];
+
+  const randomAdjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+
+  return `${randomAdjective} ${randomNoun}`;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
 
   let aktuellKalla = document.getElementById('kallaSelect').value || 'SHBF';
@@ -410,6 +436,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Quiz
   document.getElementById('quizBtn').addEventListener('click', startaQuiz);
+
+  // Namngenerator
+  document.getElementById('nameGenBtn').addEventListener('click', () => {
+    const modal = new bootstrap.Modal(document.getElementById('nameGenModal'));
+    document.getElementById('beerNameOutput').textContent = generateBeerName(); // Generate name immediately
+    modal.show();
+  });
+
+  document.getElementById('generateNameBtn').addEventListener('click', () => {
+    document.getElementById('beerNameOutput').textContent = generateBeerName();
+  });
 
   // Theme toggler
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
