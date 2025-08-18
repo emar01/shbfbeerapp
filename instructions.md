@@ -1,3 +1,13 @@
+# Välja stilguidekälla
+
+Appen stödjer flera olika stilguide-filer i `db`-mappen. Du kan välja mellan t.ex:
+
+- **SHBF**: `beerXML-generate.xml`
+- **BJCP**: `bjcp-beer-2021_en.xml`
+
+I appen finns en lista där du väljer vilken stilguide som ska användas. Valet styr vilka öltyper och beskrivningar som visas.
+
+Om du vill lägga till fler guider, placera motsvarande XML-fil i `db`-mappen och den blir valbar i listan.
 ## 9. Quiz-funktion
 
 - Skapa en quiz-funktion där användaren får 10 frågor baserade på innehållet i `beerXML-generate.xml`.
