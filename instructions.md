@@ -1,3 +1,6 @@
+# Viktigt om filstruktur
+
+Filerna `app.js`, `index.html` och `style.css` ska alltid ligga i projektroten (dvs. direkt i huvudmappen för projektet) och **inte** i någon undermapp som t.ex. `web/` eller liknande. Alla sökvägar i koden och HTML ska utgå från detta.
 # Datavy för OG, FG, ABV, IBU, Färg
 
 När du klickar på en ölstil visas nu OG, FG, ABV, IBU och Färg som horisontella staplar, inspirerat av bilden `assets/data-view.jpeg`. Varje stapel visar min- och maxvärde samt etikett till vänster. Endast de fält som finns i XML visas. Färger och layout följer appens tema.
