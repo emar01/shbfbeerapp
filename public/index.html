@@ -1,29 +1,3 @@
-<!-- ======= Modal Templates ======= -->
-  <template id="typModalTemplate">
-    <div class="row g-3 align-items-stretch">
-      <div class="col-12 col-md-5 col-lg-4 d-flex flex-column align-items-start justify-content-start border-end pe-md-4 mb-3 mb-md-0">
-        <span class="badge rounded-pill bg-orange fs-3 px-4 py-2 mb-2 align-self-center" data-bokstav></span>
-        <h4 class="mb-1 mt-2 w-100 text-center text-md-start" data-namn></h4>
-        <div class="text-muted mb-2 w-100 text-center text-md-start" data-kategori></div>
-        <div class="databar-container mb-2" data-dataview></div>
-      </div>
-      <div class="col-12 col-md-7 col-lg-8 d-flex flex-column justify-content-start ps-md-4">
-        <div class="mb-3" data-noter></div>
-        <div class="mb-3" data-profil></div>
-        <div class="mb-3" data-exempel></div>
-      </div>
-    </div>
-  </template>
-
-  <template id="quizModalTemplate">
-    <div class="text-center mb-4">
-      <img src="../assets/quiz2.jpeg" alt="Quiz" width="60" height="60" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
-      <div class="fw-bold fs-5" data-fraga-raknare></div>
-    </div>
-    <div class="mb-3 fs-5" data-fraga-text></div>
-    <div class="list-group mb-4" id="quizAlternativ"></div>
-    <div class="text-end"><span class="text-muted" data-fragetype></span></div>
-  </template>
 <!DOCTYPE html>
 <html lang="sv">
 <head>
@@ -32,14 +6,14 @@
   <title>Öltypdefinitioner 2020</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="../src/css/style.css">
 </head>
 <body>
   <!-- ======= Header ======= -->
   <header class="app-header bg-beige py-4 mb-4 shadow-sm">
     <div class="container header-flex">
       <div class="header-brand">
-  <img src="assets/logo.png" alt="Logo" class="logo me-2">
+        <img src="assets/logo.png" alt="Logo" class="logo me-2">
         <div>
           <h1 class="app-title text-orange mb-0">Öltypdefinitioner 2020</h1>
           <p class="lead text-dark mb-0">En guide till SHBF:s ölstilar 2020</p>
@@ -55,7 +29,6 @@
         <button id="nameGenBtn" class="btn btn-lg btn-orange">
           <i class="bi bi-magic"></i>
         </button>
-        
       </div>
     </div>
   </header>
@@ -130,6 +103,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="app.js" defer></script>
+  <script src="../src/js/app.js" defer></script>
 </body>
 </html>

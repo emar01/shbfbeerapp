@@ -1,0 +1,15 @@
+{
+  "name": "shbfbeerapp",
+  "version": "1.0.0",
+  "description": "En öltyp-app med SHBF och BJCP, omstrukturerad för teamutveckling.",
+  "scripts": {
+    "start": "npx live-server public",
+    "lint": "eslint src/js --ext .js",
+    "format": "prettier --write src/js src/css"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "live-server": "^1.2.2"
+  }
+}
