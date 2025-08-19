@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<STYLES>
+ <STYLE>
+	<STYLE_GUIDE>SHBF 2020</STYLE_GUIDE>
+	<NAME>Helles</NAME>
+	<STYLE_LETTER>A</STYLE_LETTER>
+	<CATEGORY>Mild/karakt&#228;rsfull Lager</CATEGORY>
+	<CATEGORY_NUMBER>1</CATEGORY_NUMBER>
+	<TYPE>Lager</TYPE>
+	<OG_MIN>1.044</OG_MIN>
+	<OG_MAX>1.050</OG_MAX>
+	<FG_MIN>1.008</FG_MIN>
+	<FG_MAX>1.012</FG_MAX>
+	<IBU_MIN>15</IBU_MIN>
+	<IBU_MAX>24</IBU_MAX>
+	<COLOR_MIN>3.56</COLOR_MIN>
+	<COLOR_MAX>7.11</COLOR_MAX>
+	<ABV_MIN>4.5</ABV_MIN>
+	<ABV_MAX>5.2</ABV_MAX>
+	<NOTES>N&#228;r tillverkningen av lager&#246;l omvandlades fr&#229;n hantverk till industri i M&#252;nchen p&#229; 1830-talet var alla lager&#246;l mer eller mindre m&#246;rka. Den viktigaste orsaken till att det bryggdes m&#246;rkt &#246;l &#228;r Bayerns i regel h&#229;rda vatten. De f&#246;rsta ljusa industritillverkade lager&#246;len bryggdes i B&#246;hmen (Pilsen) i nuvarande Tjeckien p&#229; 1840-talet eftersom vattnet d&#228;r &#228;r mjukt p&#229; m&#229;nga platser. De f&#246;rsta ljusa lager&#246;len i Bayern bryggdes f&#246;rst p&#229; 1890-talet. &#196;ven om f&#228;rgen med s&#228;kerhet inspirerats av det b&#246;hmiska &#246;let s&#229; &#228;r den ljusa bayerska lagerns &#246;vriga karakt&#228;rsdrag mer lika landets traditionella m&#246;rka lager, med betoning p&#229; maltkarakt&#228;ren och med mycket diskret humleprofil. Helles &#228;r stilbildande f&#246;r de flesta europeiska ljusa lager&#246;l. Liksom andra traditionella lager&#246;l b&#246;r det dekoktionsm&#228;skas samt j&#228;sas kallt och lagras l&#228;nge.</NOTES>
+	<PROFILE>Gr&#228;ddig eller br&#246;dig malt p&#229; medium niv&#229; ska finnas. &#13;
+&#13;
+Humledoft av centraleuropeiska humlesorter p&#229; l&#229;g niv&#229; f&#229;r f&#246;rekomma. &#13;
+&#13;
+Inga fruktestrar, DMS eller diacetyl f&#229;r f&#246;rekomma. Ingen karamellarom f&#229;r f&#246;rekomma.
+
+Halmgul till gyllengul.
+
+Gr&#228;ddig eller br&#246;dig malt p&#229; medium niv&#229; ska finnas. &#13;
+Humlesmak av centraleuropeiska humlesorter p&#229; en l&#229;g niv&#229; f&#229;r finnas.&#13;
+Efterbeska p&#229; en l&#229;g niv&#229; f&#229;r finnas. &#13;
+Inga fruktestrar eller andra j&#228;sningsprodukter som DMS eller diacetyl f&#229;r f&#246;rekomma. Ingen karamellsmak f&#229;r f&#246;rekomma.
+
+Medium kropp. Mjuk maltighet med l&#229;g till medium kolsyra.</PROFILE>
+	<EXAMPLES>Berger Vollbier Hell, 5.1% - &#13;
+Stierberger Export Hell, 5.0%</EXAMPLES>
+ </STYLE>
+ <STYLE>
+	<STYLE_GUIDE>SHBF 2020</STYLE_GUIDE>
+	<NAME>Export</NAME>
+	<STYLE_LETTER>B</STYLE_LETTER>
+	<CATEGORY>Mild/karakt&#228;rsfull Lager</CATEGORY>
+	<CATEGORY_NUMBER>1</CATEGORY_NUMBER>
+	<TYPE>Lager</TYPE>
+	<OG_MIN>1.050</OG_MIN>
+	<OG_MAX>1.060</OG_MAX>
+	<FG_MIN>1.008</FG_MIN>
+	<FG_MAX>1.014</FG_MAX>
+	<IBU_MIN>18</IBU_MIN>
+	<IBU_MAX>25</IBU_MAX>
+	<COLOR_MIN>3.56</COLOR_MIN>
+	<COLOR_MAX>7.11</COLOR_MAX>
+	<ABV_MIN>5.0</ABV_MIN>
+	<ABV_MAX>6.3</ABV_MAX>
+	<NOTES>Staden Dortmund i Westfalen var en av de platser i norra Tyskland som tidigt anammade det bayerska lager&#246;let. Fram till 1870-talet var det m&#246;rkt liksom i M&#252;nchen och hade mest lokal betydelse, men d&#228;refter blev Dortmund k&#228;nt f&#246;r ett ljust lager&#246;l med n&#229;got h&#246;gre alkoholhalt och beska. Stadens &#246;lindustrier s&#229;lde sina produkter p&#229; en stor marknad och kallade d&#228;rf&#246;r &#246;ltypen f&#246;r Export. Senare kom alla ljusa lager&#246;l med en v&#246;rtstyrka &#246;ver OG 48 och ABV &#246;ver 5 % kallas f&#246;r Export i hela Tyskland och i andra l&#228;nder. &#214;let brukar vara h&#246;gf&#246;rj&#228;st med en krispig maltsmak och balanserande men inte s&#228;rskilt aromatisk beska. Ljusa lager&#246;l med en v&#246;rtstyrka &#246;ver OG 52 brukar kallas Spezial och har en liknande men generellt kraftigare karakt&#228;r. Hit h&#246;r bland annat M&#252;nchens nuvarande oktoberfest&#246;l. Liksom andra traditionella lager&#246;l b&#246;r det dekoktionsm&#228;skas samt j&#228;sas kallt och lagras l&#228;nge.</NOTES>
+	<PROFILE>Krispigt br&#246;dig malt ska finnas p&#229; medium niv&#229;. &#13;
+Humledoft av centraleuropeiska humlesorter p&#229; l&#229;g niv&#229; f&#229;r f&#246;rekomma. &#13;
+Alkoholtoner p&#229; mycket l&#229;g niv&#229; f&#229;r f&#246;rekomma. &#13;
+Inga fruktestrar, DMS eller diacetyl f&#229;r f&#246;rekomma. Ingen karamelldoft.
+
+Halmgul till gyllengul.
+
+Torrt helhetsintryck. Krispigt br&#246;dig maltsmak ska f&#246;rekomma. &#13;
+Balanserande humlebeska p&#229; l&#229;g till medium niv&#229; ska f&#246;rekomma.&#13;
+Humlesmak av centraleuropeiska humlesorter f&#229;r f&#246;rekomma p&#229; l&#229;g niv&#229;. &#13;
+Alkoholtoner p&#229; mycket l&#229;g niv&#229; f&#229;r f&#246;rekomma.&#13;
+Inga fruktestrar, DMS eller diacetyl f&#229;r f&#246;rekomma. Ingen karamellsmak f&#229;r f&#246;rekomma.
+
+Medium kropp. Torr maltighet och medium kolsyra.</PROFILE>
+	<EXAMPLES>Augustiner Edelstoff, 5.6%&#13;
+- Tegernseer Spezial, 5.6%&#13;
+- Andechser Spezial Hell, 5.9%</EXAMPLES>
+ </STYLE>
+ <!-- ... (resten av filen fortsätter) ... -->

@@ -4,6 +4,13 @@ body {
   color: #222;
   font-family: 'Segoe UI', Arial, sans-serif;
 }
+
+h1 {
+	color: #333;
+}
+
+/* Additional styles... */
+
 .app-header {
   background: #fff3cd;
   border-bottom: 2px solid #f7b731;

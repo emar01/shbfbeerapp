@@ -1,0 +1,34 @@
+name: Copy to docs and dist for deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy files to docs/ and dist/
+        run: |
+          rm -rf docs/* dist/*
+          mkdir -p docs/assets docs/css docs/js docs/db
+          mkdir -p dist/assets dist/css dist/js dist/db
+          cp public/index.html docs/index.html
+          cp public/index.html dist/index.html
+          cp src/css/style.css docs/css/style.css
+          cp src/css/style.css dist/css/style.css
+          cp src/js/app.js docs/js/app.js
+          cp src/js/app.js dist/js/app.js
+          cp src/db/*.xml docs/db/
+          cp src/db/*.xml dist/db/
+          cp public/assets/* docs/assets/
+          cp public/assets/* dist/assets/
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/ dist/
+          git diff --cached --quiet || git commit -m 'Update docs and dist for deployment [auto]'
+          git push

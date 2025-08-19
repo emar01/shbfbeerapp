@@ -1,0 +1,28 @@
+name: Copy to docs for GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Copy files to docs/
+        run: |
+          rm -rf docs/*
+          mkdir -p docs/assets docs/css docs/js docs/db
+          cp public/index.html docs/index.html
+          cp src/css/style.css docs/css/style.css
+          cp src/js/app.js docs/js/app.js
+          cp src/db/*.xml docs/db/
+          cp public/assets/* docs/assets/
+      - name: Commit and push changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/
+          git diff --cached --quiet || git commit -m 'Update docs for GitHub Pages [auto]'
+          git push
