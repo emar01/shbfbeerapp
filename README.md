@@ -29,4 +29,4 @@ Applikationens design följer SHBF:s visuella identitet med färger som orange (
 ## Förhandsgranskning
 
 Se en live-version av applikationen här:
-https://htmlpreview.github.io/?https://github.com/emar01/shbfbeerapp/blob/master/web/index.html
+https://emar01.github.io/shbfbeerapp/
