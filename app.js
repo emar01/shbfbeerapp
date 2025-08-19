@@ -29,10 +29,33 @@ function parseBeerStyles(xml) {
       const kategoriNummer = style.querySelector('CATEGORY_NUMBER')?.textContent || '';
       const kategoriKey = kategoriNummer + '|' + kategoriNamn;
       if (!kategorierMap[kategoriKey]) {
+        // Hämta notes från style med STYLE_LETTER 'A' för denna kategori
+        let beskrivning = '';
+        let aNotes = '';
+        for (let s of styleNodes) {
+          const katNamn = s.querySelector('CATEGORY')?.textContent || '';
+          const katNum = s.querySelector('CATEGORY_NUMBER')?.textContent || '';
+          const styleLetter = s.querySelector('STYLE_LETTER')?.textContent || '';
+          if (katNamn === kategoriNamn && katNum === kategoriNummer && styleLetter === 'A') {
+            aNotes = s.querySelector('NOTES')?.textContent || '';
+            break;
+          }
+        }
+        // Visa endast om notes verkar vara en kategoribeskrivning (väldigt enkel heuristik: om texten nämner kategorinamnet eller är ovanligt lång)
+        if (aNotes) {
+          const lowerNotes = aNotes.toLowerCase();
+          const lowerKat = kategoriNamn.toLowerCase();
+          if (lowerNotes.includes(lowerKat) || aNotes.length > 200) {
+            beskrivning = aNotes;
+          } else {
+            beskrivning = '';
+          }
+        }
         kategorierMap[kategoriKey] = {
           namn: kategoriNamn,
           nummer: kategoriNummer,
-          typer: []
+          typer: [],
+          beskrivning
         };
       }
       kategorierMap[kategoriKey].typer.push({
@@ -63,11 +86,16 @@ function parseBeerStyles(xml) {
       const kategoriNummer = category.getAttribute('id') || '';
       const kategoriNamn = category.querySelector('name')?.textContent || '';
       const kategoriKey = kategoriNummer + '|' + kategoriNamn;
+      // Hämta notes från category-taggen
+      let beskrivning = '';
+      const notesNode = category.querySelector('notes');
+      if (notesNode) beskrivning = notesNode.textContent || '';
       if (!kategorierMap[kategoriKey]) {
         kategorierMap[kategoriKey] = {
           namn: kategoriNamn,
           nummer: kategoriNummer,
-          typer: []
+          typer: [],
+          beskrivning
         };
       }
       const subNodes = category.querySelectorAll('subcategory');
@@ -135,22 +163,30 @@ function renderAccordion(kategorier) {
   acc.innerHTML = '';
   // Om det bara finns en "kategori" och den heter Sökresultat, visa typ-listan direkt
   if (kategorier.length === 1 && kategorier[0].namn === 'Sökresultat') {
-    const typerList = kategorier[0].typer.map(typ => `
+    const typerList = kategorier[0].typer.map(typ => {
+      const typKod = `${typ.kategoriNummer}${typ.bokstav}`;
+      return `
       <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${typ.kategori.replace(/'/g, "'")}', '${typ.namn.replace(/'/g, "'")}', this)">
-        <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typ.bokstav}</span>
+        <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typKod}</span>
         <span class="fw-semibold">${typ.namn}</span>
         <span class="text-muted ms-auto small">${typ.kategori}</span>
-      </li>`).join('');
+      </li>`;
+    }).join('');
     acc.innerHTML = `<div class="card mb-3"><div class="card-header bg-orange text-white fw-bold">Sökresultat</div><ul class="list-group list-group-flush">${typerList}</ul></div>`;
     return;
   }
   // Annars visa accordion som vanligt
   kategorier.forEach((kat, i) => {
-    const typerList = kat.typer.map(typ => `
+    // Sortera typer på bokstav A-Ö
+    const sorteradeTyper = kat.typer.slice().sort((a, b) => a.bokstav.localeCompare(b.bokstav, 'sv'));
+    const typerList = sorteradeTyper.map(typ => {
+      const typKod = `${typ.kategoriNummer}${typ.bokstav}`;
+      return `
       <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${kat.namn.replace(/'/g, "'")}', '${typ.namn.replace(/'/g, "'")}', this)">
-        <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typ.bokstav}</span>
+        <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typKod}</span>
         <span class="fw-semibold">${typ.namn}</span>
-      </li>`).join('');
+      </li>`;
+    }).join('');
     acc.innerHTML += `
       <div class="accordion-item">
         <h2 class="accordion-header" id="heading${i}">
@@ -231,12 +267,13 @@ function filtreraKategorier(sokterm) {
       }
     });
   });
-  // Visa alla träffade typer i en "kategori" (sökresultat)
+  // Visa alla träffade typer i en "kategori" (sökresultat), sortera på bokstav
   if (matchandeTyper.length > 0) {
+    const sorteradeTyper = matchandeTyper.slice().sort((a, b) => a.bokstav.localeCompare(b.bokstav, 'sv'));
     return [{
       namn: 'Sökresultat',
       nummer: '',
-      typer: matchandeTyper
+      typer: sorteradeTyper
     }];
   }
   return [];
