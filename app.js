@@ -5,9 +5,9 @@
 async function hamtaData(kalla = 'SHBF') {
   let url;
   if (kalla === 'SHBF') {
-    url = '../db/beerXML-generate.xml';
+    url = '/db/beerXML-generate.xml';
   } else if (kalla === 'BJCP') {
-    url = '../db/bjcp-beer-2021_en.xml';
+    url = '/db/bjcp-beer-2021_en.xml';
   } else {
     throw new Error('Okänd källa');
   }
