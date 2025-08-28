@@ -12,7 +12,7 @@
   border-radius: 2.7rem;
   box-shadow: 0 4px 24px #0002, 0 2px 8px #d35c1c22;
   border: 2.5px solid #d35c1c;
-  padding: 0.45rem 1.7rem 0.45rem 0.9rem;
+  padding: 0.25rem 1.5rem 0.25rem 0.8rem;
   transition: box-shadow 0.2s, border 0.2s;
 }
 .bankplatser-search:focus-within {
@@ -20,20 +20,20 @@
   border-color: #b23c00;
 }
 .bankplatser-search-icon {
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: #d35c1c;
-  margin-right: 1.1rem;
+  margin-right: 0.8rem;
   margin-left: 0.2rem;
   display: flex;
   align-items: center;
-  height: 2.7rem;
+  height: 2.2rem;
 }
 .bankplatser-search-input {
   border: none !important;
   outline: none !important;
   background: transparent !important;
-  font-size: 1.7rem;
-  padding: 0.9rem 0.5rem 0.9rem 0.2rem;
+  font-size: 1.4rem;
+  padding: 0.7rem 0.5rem 0.7rem 0.2rem;
   width: 100%;
   box-shadow: none !important;
   color: #222;
