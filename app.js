@@ -372,7 +372,7 @@ function visaQuizFråga() {
   const q = quizFrågor[quizIndex];
   if (!q) return visaQuizResultat();
   let html = `<div class="text-center mb-4">
-    <img src="../assets/quiz2.jpeg" alt="Quiz" width="60" height="60" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
+  <img src="../assets/olstop-icon.svg" alt="Quiz" width="60" height="60" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
     <div class="fw-bold fs-5">Fråga ${quizIndex + 1} av 10</div>
   </div>
   <div class="mb-3 fs-5">${q.fråga}</div>
@@ -408,7 +408,7 @@ function svaraQuiz(i) {
 
 function visaQuizResultat() {
   let html = `<div class="text-center mb-4">
-    <img src="../assets/quiz.jpeg" alt="Quiz" width="70" height="70" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
+  <img src="../assets/olstop-icon.svg" alt="Quiz" width="70" height="70" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
     <div class="fw-bold fs-4 text-orange">Du fick ${quizRätt} av 10 rätt!</div>
   </div><hr>`;
   html += '<ol class="mt-4">';
