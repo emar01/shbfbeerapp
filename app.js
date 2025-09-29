@@ -210,10 +210,15 @@ function visaTypDetalj(katNamn, typNamn, el) {
   const typ = kategori.typer.find(t => t.namn === typNamn);
   // Hjälpfunktion för stapel
   function stapel(label, min, max, enhet, fargklass) {
-    if (!min && !max) return '';
+    // Kontrollera om data saknas eller är meningslös
+    if (!min || !max || min === '-' || max === '-') return '';
+    
     let minVal = parseFloat(min.replace(',', '.'));
     let maxVal = parseFloat(max.replace(',', '.'));
-    if (isNaN(minVal) || isNaN(maxVal)) return '';
+    
+    // Dölja stapel om värden är 0, NaN eller identiska och meningslösa
+    if (isNaN(minVal) || isNaN(maxVal) || (minVal === 0 && maxVal === 0)) return '';
+    
     let minPos = 0;
     let maxPos = 100;
     return `<div class="databar-row">
