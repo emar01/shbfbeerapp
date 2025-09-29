@@ -210,14 +210,21 @@ function visaTypDetalj(katNamn, typNamn, el) {
   const typ = kategori.typer.find(t => t.namn === typNamn);
   // Hjälpfunktion för stapel
   function stapel(label, min, max, enhet, fargklass) {
-    // Kontrollera om data saknas eller är meningslös
-    if (!min || !max || min === '-' || max === '-') return '';
+    // Kontrollera om data saknas helt
+    if (!min && !max) return '';
+    if (min === '-' && max === '-') return '';
+    if (min === '' && max === '') return '';
     
-    let minVal = parseFloat(min.replace(',', '.'));
-    let maxVal = parseFloat(max.replace(',', '.'));
+    let minVal = parseFloat((min || '0').replace(',', '.'));
+    let maxVal = parseFloat((max || '0').replace(',', '.'));
     
-    // Dölja stapel om värden är 0, NaN eller identiska och meningslösa
-    if (isNaN(minVal) || isNaN(maxVal) || (minVal === 0 && maxVal === 0)) return '';
+    // Endast dölja om BÅDA värdena är NaN eller BÅDA är exakt 0
+    if (isNaN(minVal) && isNaN(maxVal)) return '';
+    if (minVal === 0 && maxVal === 0) return '';
+    
+    // Om ett värde är giltigt, använd det (sätt det andra till 0 om ogiltigt)
+    if (isNaN(minVal)) minVal = 0;
+    if (isNaN(maxVal)) maxVal = 0;
     
     let minPos = 0;
     let maxPos = 100;
@@ -324,19 +331,43 @@ function skapaQuizFrågor(kategorier) {
     return !(x1 < n2 || x2 < n1); // Returnerar true om de överlappar
   }
   
+  // Hjälpfunktion för att kontrollera om en stil har teknisk data
+  function harTekniskData(typ) {
+    const harOG = typ.OG_MIN && typ.OG_MAX && typ.OG_MIN !== '-' && typ.OG_MAX !== '-' && typ.OG_MIN !== '0' && typ.OG_MAX !== '0';
+    const harFG = typ.FG_MIN && typ.FG_MAX && typ.FG_MIN !== '-' && typ.FG_MAX !== '-' && typ.FG_MIN !== '0' && typ.FG_MAX !== '0';
+    const harABV = typ.ABV_MIN && typ.ABV_MAX && typ.ABV_MIN !== '-' && typ.ABV_MAX !== '-' && typ.ABV_MIN !== '0' && typ.ABV_MAX !== '0';
+    const harIBU = typ.IBU_MIN && typ.IBU_MAX && typ.IBU_MIN !== '-' && typ.IBU_MAX !== '-' && typ.IBU_MIN !== '0' && typ.IBU_MAX !== '0';
+    const harFärg = typ.COLOR_MIN && typ.COLOR_MAX && typ.COLOR_MIN !== '-' && typ.COLOR_MAX !== '-' && typ.COLOR_MIN !== '0' && typ.COLOR_MAX !== '0';
+    
+    return harOG || harFG || harABV || harIBU || harFärg;
+  }
+
   valdaTyper.forEach(typ => {
       if (frågor.length >= 10) return; // Stoppa när vi har 10 frågor
       
-      // Välj frågetyp slumpmässigt
-      const frågetyper = [
+      // Definiera vilka frågetyper som är tillgängliga för denna stil
+      let frågetyper = [
         'Vilken kategori tillhör ölstilen',
-        'Vilket OG-intervall har ölstilen',
-        'Vilket IBU-intervall har ölstilen',
-        'Vilken alkoholhalt (ABV) har ölstilen',
-        'Vilken färg har ölstilen',
         'Vilken är rätt profilbeskrivning?',
         'Vilket är ett exempel på denna stil?'
       ];
+      
+      // Lägg bara till tekniska datafrågor om stilen har teknisk data
+      if (harTekniskData(typ)) {
+        if (typ.OG_MIN && typ.OG_MAX && typ.OG_MIN !== '-' && typ.OG_MAX !== '-' && typ.OG_MIN !== '0' && typ.OG_MAX !== '0') {
+          frågetyper.push('Vilket OG-intervall har ölstilen');
+        }
+        if (typ.IBU_MIN && typ.IBU_MAX && typ.IBU_MIN !== '-' && typ.IBU_MAX !== '-' && typ.IBU_MIN !== '0' && typ.IBU_MAX !== '0') {
+          frågetyper.push('Vilket IBU-intervall har ölstilen');
+        }
+        if (typ.ABV_MIN && typ.ABV_MAX && typ.ABV_MIN !== '-' && typ.ABV_MAX !== '-' && typ.ABV_MIN !== '0' && typ.ABV_MAX !== '0') {
+          frågetyper.push('Vilken alkoholhalt (ABV) har ölstilen');
+        }
+        if (typ.COLOR_MIN && typ.COLOR_MAX && typ.COLOR_MIN !== '-' && typ.COLOR_MAX !== '-' && typ.COLOR_MIN !== '0' && typ.COLOR_MAX !== '0') {
+          frågetyper.push('Vilken färg har ölstilen');
+        }
+      }
+      
       const typAv = shuffle(frågetyper)[0];
       let fråga = '', svar = '', alt = [];
       
