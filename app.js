@@ -285,14 +285,16 @@ let quizFrågor = [];
 let quizSvar = [];
 let quizIndex = 0;
 let quizRätt = 0;
+let quizVäntar = false; // För att förhindra flera klick under feedback
 
 function startaQuiz() {
   // Skapa quizFrågor från en djup klon av window.kategorier så att quiz aldrig påverkar originaldata
   const kategorierKlon = JSON.parse(JSON.stringify(window.kategorier));
   quizFrågor = skapaQuizFrågor(kategorierKlon);
-  quizSvar = [];
+  quizSvar = new Array(10).fill(null); // Pre-allokera array för alla svar
   quizIndex = 0;
   quizRätt = 0;
+  quizVäntar = false;
   visaQuizFråga();
   const modal = new bootstrap.Modal(document.getElementById('quizModal'));
   modal.show();
@@ -300,14 +302,26 @@ function startaQuiz() {
 
 function skapaQuizFrågor(kategorier) {
   // Samla alla typer
-  // Gör en djup kopia av kategorier och typer för quiz så att window.kategorier inte påverkas
   const allaTyper = [];
   kategorier.forEach(kat => kat.typer.forEach(typ => allaTyper.push(JSON.parse(JSON.stringify({ ...typ, kategori: kat.namn })))));
+  
   // Slumpa 10 olika frågor av olika typ
   const frågor = [];
   const shuffle = arr => arr.sort(() => Math.random() - 0.5);
-  const valdaTyper = shuffle([...allaTyper]).slice(0, 10);
+  const valdaTyper = shuffle([...allaTyper]).slice(0, 15); // Ta lite fler för att säkerställa 10 giltiga
+  
+  // Hjälpfunktion för att kontrollera om två intervall överlappar
+  function intervalOverlappar(min1, max1, min2, max2) {
+    const n1 = parseFloat(min1.replace(',', '.'));
+    const x1 = parseFloat(max1.replace(',', '.'));
+    const n2 = parseFloat(min2.replace(',', '.'));
+    const x2 = parseFloat(max2.replace(',', '.'));
+    return !(x1 < n2 || x2 < n1); // Returnerar true om de överlappar
+  }
+  
   valdaTyper.forEach(typ => {
+      if (frågor.length >= 10) return; // Stoppa när vi har 10 frågor
+      
       // Välj frågetyp slumpmässigt
       const frågetyper = [
         'Vilken kategori tillhör ölstilen',
@@ -320,6 +334,7 @@ function skapaQuizFrågor(kategorier) {
       ];
       const typAv = shuffle(frågetyper)[0];
       let fråga = '', svar = '', alt = [];
+      
       if (typAv === 'Vilken kategori tillhör ölstilen') {
         if (!typ.kategori) return;
         fråga = `Vilken kategori tillhör ölstilen <b>${typ.namn}</b>?`;
@@ -329,22 +344,54 @@ function skapaQuizFrågor(kategorier) {
         if (!typ.OG_MIN || !typ.OG_MAX || typ.OG_MIN === '-' || typ.OG_MAX === '-') return;
         fråga = `Vilket OG-intervall har <b>${typ.namn}</b>?`;
         svar = `${typ.OG_MIN} – ${typ.OG_MAX}`;
-        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.OG_MIN && t.OG_MAX && t.OG_MIN !== '-' && t.OG_MAX !== '-').map(t => `${t.OG_MIN} – ${t.OG_MAX}`)];
+        // Filtrera bort intervall som överlappar med rätt svar
+        alt = [svar];
+        allaTyper.filter(t => t.namn !== typ.namn && t.OG_MIN && t.OG_MAX && t.OG_MIN !== '-' && t.OG_MAX !== '-')
+          .forEach(t => {
+            const altSvar = `${t.OG_MIN} – ${t.OG_MAX}`;
+            if (!intervalOverlappar(typ.OG_MIN, typ.OG_MAX, t.OG_MIN, t.OG_MAX)) {
+              alt.push(altSvar);
+            }
+          });
       } else if (typAv === 'Vilket IBU-intervall har ölstilen') {
         if (!typ.IBU_MIN || !typ.IBU_MAX || typ.IBU_MIN === '-' || typ.IBU_MAX === '-') return;
         fråga = `Vilket IBU-intervall har <b>${typ.namn}</b>?`;
         svar = `${typ.IBU_MIN} – ${typ.IBU_MAX}`;
-        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.IBU_MIN && t.IBU_MAX && t.IBU_MIN !== '-' && t.IBU_MAX !== '-').map(t => `${t.IBU_MIN} – ${t.IBU_MAX}`)];
+        // Filtrera bort intervall som överlappar med rätt svar
+        alt = [svar];
+        allaTyper.filter(t => t.namn !== typ.namn && t.IBU_MIN && t.IBU_MAX && t.IBU_MIN !== '-' && t.IBU_MAX !== '-')
+          .forEach(t => {
+            const altSvar = `${t.IBU_MIN} – ${t.IBU_MAX}`;
+            if (!intervalOverlappar(typ.IBU_MIN, typ.IBU_MAX, t.IBU_MIN, t.IBU_MAX)) {
+              alt.push(altSvar);
+            }
+          });
       } else if (typAv === 'Vilken alkoholhalt (ABV) har ölstilen') {
         if (!typ.ABV_MIN || !typ.ABV_MAX || typ.ABV_MIN === '-' || typ.ABV_MAX === '-') return;
         fråga = `Vilket ABV-intervall har <b>${typ.namn}</b>?`;
         svar = `${typ.ABV_MIN} – ${typ.ABV_MAX} %`;
-        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.ABV_MIN && t.ABV_MAX && t.ABV_MIN !== '-' && t.ABV_MAX !== '-').map(t => `${t.ABV_MIN} – ${t.ABV_MAX} %`)];
+        // Filtrera bort intervall som överlappar med rätt svar
+        alt = [svar];
+        allaTyper.filter(t => t.namn !== typ.namn && t.ABV_MIN && t.ABV_MAX && t.ABV_MIN !== '-' && t.ABV_MAX !== '-')
+          .forEach(t => {
+            const altSvar = `${t.ABV_MIN} – ${t.ABV_MAX} %`;
+            if (!intervalOverlappar(typ.ABV_MIN, typ.ABV_MAX, t.ABV_MIN, t.ABV_MAX)) {
+              alt.push(altSvar);
+            }
+          });
       } else if (typAv === 'Vilken färg har ölstilen') {
         if (!typ.COLOR_MIN || !typ.COLOR_MAX || typ.COLOR_MIN === '-' || typ.COLOR_MAX === '-') return;
         fråga = `Vilket färgintervall har <b>${typ.namn}</b>?`;
         svar = `${typ.COLOR_MIN} – ${typ.COLOR_MAX}`;
-        alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.COLOR_MIN && t.COLOR_MAX && t.COLOR_MIN !== '-' && t.COLOR_MAX !== '-').map(t => `${t.COLOR_MIN} – ${t.COLOR_MAX}`)];
+        // Filtrera bort intervall som överlappar med rätt svar
+        alt = [svar];
+        allaTyper.filter(t => t.namn !== typ.namn && t.COLOR_MIN && t.COLOR_MAX && t.COLOR_MIN !== '-' && t.COLOR_MAX !== '-')
+          .forEach(t => {
+            const altSvar = `${t.COLOR_MIN} – ${t.COLOR_MAX}`;
+            if (!intervalOverlappar(typ.COLOR_MIN, typ.COLOR_MAX, t.COLOR_MIN, t.COLOR_MAX)) {
+              alt.push(altSvar);
+            }
+          });
       } else if (typAv === 'Vilken är rätt profilbeskrivning?') {
         if (!typ.profil || typ.profil.trim() === '') return;
         fråga = `Vilken är rätt profilbeskrivning för <b>${typ.namn}</b>?`;
@@ -357,68 +404,172 @@ function skapaQuizFrågor(kategorier) {
         svar = exSvar;
         alt = [svar, ...allaTyper.filter(t => t.namn !== typ.namn && t.exempel && t.exempel.trim() !== '').map(t => t.exempel.split(/[;,\n]/)[0]?.trim() || '')];
       }
+      
       // Filtrera bort tomma och dubbletter
       alt = alt.filter(a => a && a.trim() !== '');
       alt = [...new Set(alt)];
-      // Ta max 4 unika alternativ och blanda dem
-      alt = shuffle(alt).slice(0, 4);
+      
+      // VIKTIGT: Säkerställ att det rätta svaret alltid finns bland alternativen
+      const rättSvarIndex = alt.indexOf(svar);
+      if (rättSvarIndex === -1) {
+        console.error('Rätt svar saknas i alternativ!', svar, alt);
+        return; // Skippa denna fråga om rätt svar saknas
+      }
+      
+      // Ta ut rätt svar först
+      const rättSvar = alt[rättSvarIndex];
+      const övrigaAlt = alt.filter(a => a !== rättSvar);
+      
+      // Blanda övriga alternativ och ta max 3
+      const blandat = shuffle(övrigaAlt).slice(0, 3);
+      
+      // Sätt tillbaka rätt svar och blanda hela listan
+      alt = shuffle([rättSvar, ...blandat]);
+      
       if (alt.length < 2) return; // Skapa inte frågor med för få alternativ
       frågor.push({ fråga, svar, alt, typAv });
   });
-  return frågor;
+  return frågor.slice(0, 10); // Säkerställ att vi bara returnerar 10 frågor
 }
 
 function visaQuizFråga() {
+  if (quizIndex >= quizFrågor.length) return visaQuizResultat();
+  
   const q = quizFrågor[quizIndex];
   if (!q) return visaQuizResultat();
+  
   let html = `<div class="text-center mb-4">
-  <img src="../assets/olstop-icon.svg" alt="Quiz" width="60" height="60" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
-    <div class="fw-bold fs-5">Fråga ${quizIndex + 1} av 10</div>
+    <img src="assets/olstop-icon.svg" alt="Quiz" width="60" height="60" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
+    <div class="fw-bold fs-5">Fråga ${quizIndex + 1} av ${quizFrågor.length}</div>
   </div>
   <div class="mb-3 fs-5">${q.fråga}</div>
   <div class="list-group mb-4" id="quizAlternativ">`;
+  
   q.alt.forEach((alt, i) => {
-    html += `<button class="list-group-item list-group-item-action py-3" onclick="svaraQuiz(${i})">${alt}</button>`;
+    const isSelected = quizSvar[quizIndex] === alt;
+    const isCorrect = alt === q.svar;
+    let className = "list-group-item list-group-item-action py-3 quiz-alternativ";
+    
+    // Visa feedback om frågan redan är besvarad
+    if (quizSvar[quizIndex] !== null) {
+      if (isCorrect) {
+        // Rätt svar visas alltid grönt
+        className += " list-group-item-success fw-bold";
+      } else if (isSelected && !isCorrect) {
+        // Fel valt svar visas rött
+        className += " list-group-item-danger fw-bold";
+      }
+      // Övriga alternativ förblir orörda (ingen extra klass)
+    }
+    
+    html += `<button class="${className}" onclick="svaraQuiz(${i})" ${quizSvar[quizIndex] !== null ? 'disabled' : ''}>${alt}</button>`;
   });
+  
   html += '</div>';
-  html += `<div class="text-end"><span class="text-muted">${q.typAv}</span></div>`;
+  
+  // Navigeringsknappar
+  html += `<div class="d-flex justify-content-between align-items-center mt-4">
+    <button class="btn btn-secondary ${quizIndex === 0 ? 'disabled' : ''}" onclick="gaForegaendeFraga()" ${quizIndex === 0 ? 'disabled' : ''}>
+      <i class="bi bi-arrow-left"></i> Föregående
+    </button>
+    <span class="text-muted">${q.typAv}</span>
+    <button class="btn btn-orange ${quizIndex === quizFrågor.length - 1 ? 'disabled' : ''}" onclick="gaNastaFraga()" ${quizIndex === quizFrågor.length - 1 ? 'disabled' : ''}>
+      Nästa <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>`;
+  
+  // Visa knapp för att se resultat om alla frågor är besvarade
+  const allaBesvarade = quizSvar.every(svar => svar !== null);
+  if (allaBesvarade) {
+    html += `<div class="text-center mt-3">
+      <button class="btn btn-success btn-lg" onclick="visaQuizResultat()">
+        <i class="bi bi-check-circle"></i> Se resultat
+      </button>
+    </div>`;
+  }
+  
   document.getElementById('quizContent').innerHTML = html;
 }
 
 function svaraQuiz(i) {
+  if (quizVäntar || quizSvar[quizIndex] !== null) return; // Förhindra dubbelsvar
+  
   const q = quizFrågor[quizIndex];
   const valt = q.alt[i];
-  quizSvar.push({ fråga: q.fråga, rätt: q.svar, valt });
-  if (valt === q.svar) quizRätt++;
+  
+  // Spara svaret
+  quizSvar[quizIndex] = valt;
+  
   // Visa feedback direkt
   const btns = document.querySelectorAll('#quizAlternativ button');
   btns.forEach((btn, idx) => {
     btn.disabled = true;
-    if (idx === i && q.alt[idx] === q.svar) {
-      btn.classList.add('list-group-item-success');
-    } else if (idx === i && q.alt[idx] !== q.svar) {
-      btn.classList.add('list-group-item-danger');
+    
+    // Hitta det rätta svaret och markera det grönt
+    if (q.alt[idx] === q.svar) {
+      btn.classList.add('list-group-item-success', 'fw-bold');
+    }
+    // Om användaren valde fel, markera det röd (men bara om det inte redan är rätt svar)
+    else if (idx === i && q.alt[idx] !== q.svar) {
+      btn.classList.add('list-group-item-danger', 'fw-bold');
     }
   });
+  
+  // Uppdatera navigering efter kort paus
   setTimeout(() => {
-    quizIndex++;
     visaQuizFråga();
-  }, 1200);
+  }, 800);
 }
 
+function gaForegaendeFraga() {
+  if (quizIndex > 0) {
+    quizIndex--;
+    visaQuizFråga();
+  }
+}
+
+function gaNastaFraga() {
+  if (quizIndex < quizFrågor.length - 1) {
+    quizIndex++;
+    visaQuizFråga();
+  }
+}
+
+// Globala funktioner
+window.svaraQuiz = svaraQuiz;
+window.gaForegaendeFraga = gaForegaendeFraga;
+window.gaNastaFraga = gaNastaFraga;
+window.visaQuizResultat = visaQuizResultat;
+window.startaQuiz = startaQuiz;
+
 function visaQuizResultat() {
+  // Räkna rätt svar
+  quizRätt = 0;
+  quizFrågor.forEach((q, i) => {
+    if (quizSvar[i] === q.svar) quizRätt++;
+  });
+  
   let html = `<div class="text-center mb-4">
-  <img src="../assets/olstop-icon.svg" alt="Quiz" width="70" height="70" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
-    <div class="fw-bold fs-4 text-orange">Du fick ${quizRätt} av 10 rätt!</div>
+    <img src="assets/olstop-icon.svg" alt="Quiz" width="70" height="70" class="rounded-circle border border-2 border-orange mb-2" style="background:#fff;">
+    <div class="fw-bold fs-4 text-orange">Du fick ${quizRätt} av ${quizFrågor.length} rätt!</div>
   </div><hr>`;
+  
   html += '<ol class="mt-4">';
-  quizSvar.forEach((s, i) => {
-    html += `<li class="mb-3"><div class="mb-1">${s.fråga}</div>`;
-    html += `<div>Ditt svar: <b class="${s.valt === s.rätt ? 'text-success' : 'text-danger'}">${s.valt}</b></div>`;
-    if (s.valt !== s.rätt) html += `<div>Rätt svar: <b class="text-success">${s.rätt}</b></div>`;
+  quizFrågor.forEach((q, i) => {
+    const userSvar = quizSvar[i];
+    html += `<li class="mb-3"><div class="mb-1">${q.fråga}</div>`;
+    if (userSvar !== null) {
+      html += `<div>Ditt svar: <b class="${userSvar === q.svar ? 'text-success' : 'text-danger'}">${userSvar}</b></div>`;
+      if (userSvar !== q.svar) {
+        html += `<div>Rätt svar: <b class="text-success">${q.svar}</b></div>`;
+      }
+    } else {
+      html += `<div>Inte besvarat - Rätt svar: <b class="text-success">${q.svar}</b></div>`;
+    }
     html += '</li>';
   });
   html += '</ol>';
+  
   html += '<div class="text-center mt-4"><button class="btn btn-orange btn-lg" onclick="startaQuiz()">Försök igen</button></div>';
   document.getElementById('quizContent').innerHTML = html;
 }
