@@ -1,6 +1,6 @@
-# Beer Styles 2020 Webbapp
+# Beer Styles 2025 Webbapp
 
-En interaktiv webbapplikation för att utforska SHBF:s ölstilar från 2020, baserad på data från en BeerXML-fil. Appen är byggd med HTML5, Bootstrap 5 och ren JavaScript, utan krav på backend.
+En interaktiv webbapplikation för att utforska SHBF:s ölstilar från 2025, baserad på data från en BeerXML-fil. Appen är byggd med HTML5, Bootstrap 5 och ren JavaScript, utan krav på backend.
 
 ## Funktioner
 

@@ -21,9 +21,19 @@ Om du vill lägga till fler guider, placera motsvarande XML-fil i `db`-mappen oc
 - Quizzen ska vara helt på svenska och använda data direkt från XML-filen.
 - Använd bilderna i `assets`-mappen som heter något med `quiz` (t.ex. `quiz.jpeg`, `quiz2.jpeg`) som inspiration för design och layout.
 - Efter quizzen ska användaren få se sitt resultat och rätt svar.
-# Instruktioner för Beer Styles 2020 Webbapp
 
-Denna fil beskriver hur du bygger en webbapp för att visa ölstilar enligt SHBF 2020, baserat på beerXML-generate.xml och skärmbilderna.
+### Uppdaterade Quiz-krav:
+1. **Ingen hover-effekt** behövs för svarsalternativen
+2. **Tydlig feedback** när användaren väljer ett svar:
+   - Rätt svar visas med **tydlig grön färg** 
+   - Felaktigt valt svar visas med **tydlig röd färg**
+   - Övriga alternativ förblir orörda
+3. **Ett och endast ett rätt svar** per fråga:
+   - För intervallfrågor (OG, IBU, ABV, etc.) ska det vara tillräckligt stor skillnad mellan intervallen så att två svar aldrig kan vara korrekta samtidigt
+4. **Navigering** med framåt/bakåt-knappar längst ner i quiz-modalen för att kunna röra sig mellan frågorna
+# Instruktioner för Beer Styles 2025 Webbapp
+
+Denna fil beskriver hur du bygger en webbapp för att visa ölstilar enligt SHBF 2025, baserat på beerXML-generate.xml och skärmbilderna.
 
 
 

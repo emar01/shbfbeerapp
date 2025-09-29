@@ -55,7 +55,6 @@
   border-radius: 2.7rem !important;
   padding-left: 0.2rem;
 }
-}
 @media (max-width: 700px) {
   .bankplatser-search {
     max-width: 99vw;
@@ -429,6 +428,71 @@ header img {
 .list-group-item:hover {
   background: var(--secondary-color);
   color: var(--primary-color);
+}
+
+/* Quiz-stilar */
+.quiz-alternativ {
+  transition: all 0.2s ease;
+  border: 2px solid transparent !important;
+  margin-bottom: 0.5rem;
+}
+
+.quiz-alternativ:hover:not(:disabled) {
+  background-color: var(--secondary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
+}
+
+.quiz-alternativ:disabled {
+  opacity: 1 !important;
+  cursor: not-allowed;
+}
+
+/* Rätt svar - grön */
+.list-group-item-success {
+  background-color: #28a745 !important;
+  border-color: #28a745 !important;
+  color: #fff !important;
+}
+
+/* Fel svar - röd */
+.list-group-item-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* Säkerställ att success och danger override andra stilar */
+button.list-group-item-success {
+  background-color: #28a745 !important;
+  border-color: #28a745 !important;
+  color: #fff !important;
+}
+
+button.list-group-item-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* Mörkt tema */
+[data-bs-theme="dark"] .list-group-item-success {
+  background-color: #198754 !important;
+  border-color: #198754 !important;
+  color: #fff !important;
+}
+
+[data-bs-theme="dark"] .list-group-item-danger {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+
+/* Orörda alternativ (disabled men inte rätt eller fel) */
+.quiz-alternativ:disabled:not(.list-group-item-success):not(.list-group-item-danger) {
+  background-color: var(--surface-color) !important;
+  color: var(--text-muted-color) !important;
+  border-color: #dee2e6 !important;
 }
 
 /* Modal/Detaljpanel */
