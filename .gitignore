@@ -10,9 +10,11 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
+
+# Build output (vår egen dist-mapp)
+dist/
 .eggs/
 lib/
 lib64/

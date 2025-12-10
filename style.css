@@ -282,31 +282,42 @@
   position: relative;
   flex: 1;
   height: 1.7rem;
-  background: #e8f5e9;
+  background: transparent;
   border-radius: 6px;
-  margin-left: 0.2rem;
-  margin-right: 0.2rem;
+  margin-left: 0.3rem;
+  margin-right: 0.3rem;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 .databar-fill {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  background: #aed581;
-  border-radius: 6px;
-  z-index: 1;
+  height: 0.6rem;
+  background: #66bb6a;
+  border-radius: 3px;
+  opacity: 0.85;
+  min-width: 0;
+  transition: flex-grow 0.3s ease;
 }
+/* Olika färger för olika databars */
+.databar-row-abv .databar-fill { background: #7cb342; }
+.databar-row-og .databar-fill { background: #9e9e9e; }
+.databar-row-fg .databar-fill { background: #64b5f6; }
+.databar-row-farg .databar-fill { background: #fbc02d; }
+.databar-row-ibu .databar-fill { background: #e57373; }
 .databar-min, .databar-max {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   color: #333;
-  z-index: 2;
+  font-weight: 500;
+  flex-shrink: 0;
 }
-.databar-min { left: 0.5rem; }
-.databar-max { right: 0.5rem; }
+/* Mindre text för OG och FG specifikt */
+.databar-row-og .databar-min,
+.databar-row-og .databar-max,
+.databar-row-fg .databar-min,
+.databar-row-fg .databar-max {
+  font-size: 0.75rem;
+}
 :root {
   --primary-color: #d35c1c;
   --secondary-color: #ffe0b2;

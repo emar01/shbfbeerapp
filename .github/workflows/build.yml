@@ -1,0 +1,59 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout kod
+      uses: actions/checkout@v4
+    
+    - name: Skapa dist-mapp
+      run: |
+        echo "=== Bygger distributionsmapp ==="
+        
+        # Skapa mappar
+        mkdir -p dist/js
+        mkdir -p dist/assets
+        mkdir -p dist/db
+        
+        # Kopiera filer
+        cp index.html dist/
+        cp style.css dist/
+        cp js/*.js dist/js/ 2>/dev/null || true
+        cp -r assets/* dist/assets/ 2>/dev/null || true
+        cp db/*.xml dist/db/ 2>/dev/null || true
+        cp db/*.json dist/db/ 2>/dev/null || true
+        
+        echo "=== Build klar ==="
+        echo "Innehåll i dist:"
+        find dist -type f
+    
+    - name: Validera build
+      run: |
+        # Kontrollera att viktiga filer finns
+        test -f dist/index.html || (echo "ERROR: index.html saknas!" && exit 1)
+        test -f dist/style.css || (echo "ERROR: style.css saknas!" && exit 1)
+        test -f dist/js/app.js || (echo "ERROR: js/app.js saknas!" && exit 1)
+        echo "✓ Alla viktiga filer finns"
+    
+    - name: Ladda upp dist som artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
+        retention-days: 30
+    
+    - name: Deploy till GitHub Pages (endast på main)
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./dist
+        publish_branch: gh-pages
