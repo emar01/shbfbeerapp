@@ -29,7 +29,7 @@ function renderSearchResults(kategori, container) {
   const typerList = kategori.typer.map(typ => {
     const typKod = `${typ.kategoriNummer}${typ.bokstav}`;
     return `
-      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${typ.kategori.replace(/'/g, "'")}', '${typ.namn.replace(/'/g, "'")}', this)">
+      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${typ.kategori.replace(/'/g, "\'")}', '${typ.namn.replace(/'/g, "\'")}', this)">
         <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typKod}</span>
         <span class="fw-semibold">${typ.namn}</span>
         <span class="text-muted ms-auto small">${typ.kategori}</span>
@@ -48,7 +48,7 @@ function renderCategory(kat, index, container) {
   const typerList = sorteradeTyper.map(typ => {
     const typKod = `${typ.kategoriNummer}${typ.bokstav}`;
     return `
-      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${kat.namn.replace(/'/g, "'")}', '${typ.namn.replace(/'/g, "'")}', this)">
+      <li class="list-group-item list-group-item-action d-flex align-items-center gap-3 py-3" style="cursor:pointer" onclick="visaTypDetalj('${kat.namn.replace(/'/g, "\'")}', '${typ.namn.replace(/'/g, "\'")}', this)">
         <span class="badge rounded-pill bg-orange fs-6 fw-bold" style="min-width:2.5rem;">${typKod}</span>
         <span class="fw-semibold">${typ.namn}</span>
       </li>`;
@@ -109,9 +109,9 @@ export function visaTypDetalj(katNamn, typNamn) {
   // Rendera modalinnehåll från template
   const template = document.getElementById('typModalTemplate');
   const clone = template.content.cloneNode(true);
-  clone.querySelector('[data-bokstav]').textContent = typ.bokstav;
+  clone.querySelector('[data-bokstav]').textContent = `${typ.kategoriNummer}${typ.bokstav}`;
   clone.querySelector('[data-namn]').textContent = typ.namn;
-  clone.querySelector('[data-kategori]').textContent = `${typ.kategori} (${typ.kategoriNummer})`;
+  clone.querySelector('[data-kategori]').textContent = typ.kategori;
   clone.querySelector('[data-dataview]').innerHTML = renderDataBars(typ);
   clone.querySelector('[data-noter]').innerHTML = renderNotes(typ.noter);
   clone.querySelector('[data-profil]').innerHTML = renderProfile(typ.profil);
