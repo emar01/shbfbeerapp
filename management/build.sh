@@ -54,18 +54,11 @@ Denna mapp innehåller alla filer som behövs för att köra applikationen.
 - db/ - Databasfiler (XML/JSON)
 
 ## Hur man kör
-1. Servera denna mapp via en webbserver (ES6 modules kräver HTTP/HTTPS)
-2. Öppna index.html i webbläsaren
+Kör en webbserver från projektets rotmapp som serverar denna `dist`-mapp.
 
-## Exempel med Python
-```
-python -m http.server 8000
-```
-Öppna sedan http://localhost:8000
-
-## Exempel med Node.js
-```
-npx serve
+### Exempel
+```bash
+npx serve dist
 ```
 EOF
 
@@ -80,6 +73,4 @@ echo ""
 echo "Total storlek: $TOTAL_SIZE"
 echo ""
 echo "För att testa lokalt, kör:"
-echo "  cd dist"
-echo "  python -m http.server 8000"
-echo "  (eller: npx serve)"
+echo "  npx serve dist"
