@@ -1,0 +1,16 @@
+{
+  "name": "shbfbeerapp",
+  "version": "1.0.0",
+  "description": "En interaktiv webbapplikation för att utforska SHBF:s och BJCP:s ölstilar. Appen visar detaljerad information om olika öltyper med tekniska parametrar, beskrivningar och quizfunktion.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "expo": "^55.0.6",
+    "sharp": "^0.34.5"
+  }
+}
