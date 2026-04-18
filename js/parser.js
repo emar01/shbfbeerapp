@@ -35,11 +35,13 @@ function parseSHBFData(data, kategorierMap) {
   data.forEach(category => {
     const kategoriNummer = category.number || '';
     const kategoriNamn = category.name || '';
+    const persistentCategoryId = category.persistentCategoryId || '';
     const kategoriKey = kategoriNummer + '|' + kategoriNamn;
     
     kategorierMap[kategoriKey] = {
       namn: kategoriNamn,
       nummer: kategoriNummer,
+      persistentCategoryId: persistentCategoryId,
       typer: [],
       beskrivning: category.description || ''
     };
@@ -55,6 +57,7 @@ function parseSHBFData(data, kategorierMap) {
         const noter = notesDelar.length > 0 ? notesDelar.join('\n\n') : (style.description || '');
         
         kategorierMap[kategoriKey].typer.push({
+          persistentId: style.persistentId || '',
           namn: style.name || '',
           bokstav: style.letter || '',
           kategori: kategoriNamn,
@@ -128,12 +131,14 @@ function parseSHBFXMLData(styleNodes, kategorierMap) {
       kategorierMap[kategoriKey] = {
         namn: kategoriNamn,
         nummer: kategoriNummer,
+        persistentCategoryId: '',
         typer: [],
         beskrivning
       };
     }
     
     kategorierMap[kategoriKey].typer.push({
+      persistentId: '',
       namn: style.querySelector('NAME')?.textContent || '',
       bokstav: style.querySelector('STYLE_LETTER')?.textContent || '',
       kategori: kategoriNamn,
@@ -176,6 +181,7 @@ function parseBJCPXMLData(data, kategorierMap) {
       kategorierMap[kategoriKey] = {
         namn: kategoriNamn,
         nummer: kategoriNummer,
+        persistentCategoryId: '',
         typer: [],
         beskrivning
       };
@@ -214,6 +220,7 @@ function parseBJCPXMLData(data, kategorierMap) {
       });
       
       kategorierMap[kategoriKey].typer.push({
+        persistentId: '',
         namn: subNamn,
         bokstav: subId.replace(/^[0-9]+/, ''),
         kategori: kategoriNamn,
