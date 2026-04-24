@@ -280,10 +280,28 @@ function renderNotes(typ, oldTyp = null) {
   
   if (oldTyp && oldTyp.noter && oldTyp.noter.trim() !== noter.trim()) {
       diffHTML = `
-      <div class="mt-4 p-3 rounded" style="background-color: #f8f9fa; border: 1px dashed #adb5bd;">
-        <div class="text-muted fw-bold mb-1" style="font-size: 0.85em;">Tidigare beskrivning (${window.foregaendeVersionNamn}):</div>
-        <div class="text-danger" style="font-size: 0.9em;">
-           ${markeraVardeord(oldTyp.noter.replaceAll('\\n', '<br>'))}
+      <div class="mt-4">
+        <button class="btn btn-sm btn-outline-secondary w-100 d-flex align-items-center justify-content-center gap-2 mb-2" 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#oldNotesCollapse" 
+                aria-expanded="false" 
+                aria-controls="oldNotesCollapse"
+                style="border-style: dashed; opacity: 0.8;">
+          <i class="bi bi-clock-history"></i>
+          <span>Visa beskrivning i ${window.foregaendeVersionNamn || 'tidigare version'}</span>
+          <i class="bi bi-chevron-down ms-auto"></i>
+        </button>
+        <div class="collapse" id="oldNotesCollapse">
+          <div class="p-3 rounded border-start border-4" style="background-color: var(--surface-color); border: 1px dashed var(--border-color); border-left: 4px solid var(--primary-color) !important;">
+            <div class="text-muted small mb-2 fw-bold d-flex align-items-center gap-1">
+              <i class="bi bi-info-circle"></i>
+              Tidigare lydelse (${window.foregaendeVersionNamn || 'tidigare version'}):
+            </div>
+            <div style="font-size: 0.95em; line-height: 1.5; color: var(--text-color);">
+               ${markeraVardeord(oldTyp.noter.replaceAll('\\n', '<br>'))}
+            </div>
+          </div>
         </div>
       </div>`;
   }
