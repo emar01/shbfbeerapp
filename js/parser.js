@@ -48,14 +48,6 @@ function parseSHBFData(data, kategorierMap) {
     
     if (category.styles && Array.isArray(category.styles)) {
       category.styles.forEach(style => {
-        // Bygg noter-fält från flera källor
-        const notesDelar = [];
-        if (style.aroma) notesDelar.push(style.aroma);
-        if (style.flavor) notesDelar.push(style.flavor);
-        if (style.appearance) notesDelar.push(style.appearance);
-        if (style.texture) notesDelar.push(style.texture);
-        const noter = notesDelar.length > 0 ? notesDelar.join('\n\n') : (style.description || '');
-        
         kategorierMap[kategoriKey].typer.push({
           persistentId: style.persistentId || '',
           namn: style.name || '',
@@ -73,9 +65,14 @@ function parseSHBFData(data, kategorierMap) {
           COLOR_MAX: style.ebcMax || '',
           ABV_MIN: style.abvMin || '',
           ABV_MAX: style.abvMax || '',
-          noter: noter,
+          noter: style.description || '',
           profil: style.summary || '',
-          exempel: style.examples || ''
+          exempel: style.examples || '',
+          // Nya fält för detaljerad vy
+          aroma: style.aroma || '',
+          flavor: style.flavor || '',
+          appearance: style.appearance || '',
+          texture: style.texture || ''
         });
       });
     }

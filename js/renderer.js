@@ -151,7 +151,7 @@ export function visaTypDetalj(katNamn, typNamn) {
   clone.querySelector('[data-kategori]').textContent = typ.kategori;
   clone.querySelector('[data-dataview]').innerHTML = renderDataBars(typ, oldTyp);
   clone.querySelector('[data-noter]').innerHTML = renderNotes(typ, oldTyp);
-  clone.querySelector('[data-profil]').innerHTML = renderProfile(typ.profil);
+  clone.querySelector('[data-profil]').innerHTML = renderProfile(typ);
   clone.querySelector('[data-exempel]').innerHTML = renderExamples(typ.exempel);
   
   const container = document.getElementById('typDetaljer');
@@ -276,6 +276,16 @@ function markeraVardeord(text) {
  */
 function renderNotes(typ, oldTyp = null) {
   let noter = typ.noter || '';
+  let profil = typ.profil || '';
+  
+  // Kombinera profil (summary) och noter (beskrivning) för huvudbeskrivningen
+  let fullBeskrivning = '';
+  if (profil.trim() !== '') {
+    fullBeskrivning += `<i>${profil}</i>`;
+    if (noter.trim() !== '') fullBeskrivning += '<br><br>';
+  }
+  fullBeskrivning += noter;
+
   let diffHTML = '';
   
   if (oldTyp && oldTyp.noter && oldTyp.noter.trim() !== noter.trim()) {
@@ -306,8 +316,8 @@ function renderNotes(typ, oldTyp = null) {
       </div>`;
   }
 
-  return (noter.trim() !== '') 
-    ? `<b>Beskrivning:</b><br><span class="${diffHTML ? 'mark d-block p-2 rounded' : ''}">${markeraVardeord(noter.replaceAll('\\n', '<br>'))}</span>${diffHTML}` 
+  return (fullBeskrivning.trim() !== '') 
+    ? `<b>Kortfattad karaktärsbeskrivning:</b><br><span class="${diffHTML ? 'mark d-block p-2 rounded' : ''}">${markeraVardeord(fullBeskrivning.replaceAll('\\n', '<br>'))}</span>${diffHTML}` 
     : '';
 }
 
@@ -315,10 +325,30 @@ function renderNotes(typ, oldTyp = null) {
  * Rendera profil-sektion
  * @private
  */
-function renderProfile(profil) {
-  return (profil && profil.trim() !== '') 
-    ? `<b>Profil:</b><br><span>${markeraVardeord(profil.replaceAll('\n', '<br>'))}</span>` 
-    : '';
+function renderProfile(typ) {
+  let html = '';
+  
+  if (typ.profil && typ.profil.trim() !== '') {
+    // Om vi redan har profil (summary), visa den men utan rubrik om den redan visas av renderNotes
+    // Men i SHBF 2025 verkar 'profil' vara summary. 
+    // Om renderNotes använder 'noter' (description), så kan 'profil' visas här.
+    // Dock, om vi vill följa användarens rubriker exakt:
+  }
+
+  if (typ.appearance) {
+    html += `<b>Färg/Utseende:</b><br><span>${markeraVardeord(typ.appearance.replaceAll('\n', '<br>'))}</span><br><br>`;
+  }
+  if (typ.aroma) {
+    html += `<b>Bouquet/Arom:</b><br><span>${markeraVardeord(typ.aroma.replaceAll('\n', '<br>'))}</span><br><br>`;
+  }
+  if (typ.flavor) {
+    html += `<b>Smak:</b><br><span>${markeraVardeord(typ.flavor.replaceAll('\n', '<br>'))}</span><br><br>`;
+  }
+  if (typ.texture) {
+    html += `<b>Munkänsla:</b><br><span>${markeraVardeord(typ.texture.replaceAll('\n', '<br>'))}</span><br><br>`;
+  }
+
+  return html;
 }
 
 /**
@@ -327,6 +357,6 @@ function renderProfile(profil) {
  */
 function renderExamples(exempel) {
   return (exempel && exempel.trim() !== '') 
-    ? `<b>Exempel:</b><br><span>${exempel.replaceAll('\n', '<br>')}</span>` 
+    ? `<b>Förebild:</b><br><span>${exempel.replaceAll('\n', '<br>')}</span>` 
     : '';
 }
