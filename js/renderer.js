@@ -152,7 +152,7 @@ export function visaTypDetalj(katNamn, typNamn) {
   clone.querySelector('[data-dataview]').innerHTML = renderDataBars(typ, oldTyp);
   clone.querySelector('[data-noter]').innerHTML = renderNotes(typ, oldTyp);
   clone.querySelector('[data-profil]').innerHTML = renderProfile(typ);
-  clone.querySelector('[data-exempel]').innerHTML = renderExamples(typ.exempel);
+  clone.querySelector('[data-exempel]').innerHTML = renderExamples(typ.exempel, typ);
   
   const container = document.getElementById('typDetaljer');
   container.innerHTML = '';
@@ -285,6 +285,8 @@ function renderNotes(typ, oldTyp = null) {
     if (noter.trim() !== '') fullBeskrivning += '<br><br>';
   }
   fullBeskrivning += noter;
+  
+  const label = typ.kalla === 'BJCP' ? 'Description' : 'Kortfattad karaktärsbeskrivning';
 
   let diffHTML = '';
   
@@ -317,7 +319,7 @@ function renderNotes(typ, oldTyp = null) {
   }
 
   return (fullBeskrivning.trim() !== '') 
-    ? `<b>Kortfattad karaktärsbeskrivning:</b><br><span class="${diffHTML ? 'mark d-block p-2 rounded' : ''}">${markeraVardeord(fullBeskrivning.replaceAll('\\n', '<br>'))}</span>${diffHTML}` 
+    ? `<b>${label}:</b><br><span class="${diffHTML ? 'mark d-block p-2 rounded' : ''}">${markeraVardeord(fullBeskrivning.replaceAll('\\n', '<br>'))}</span>${diffHTML}` 
     : '';
 }
 
@@ -327,25 +329,27 @@ function renderNotes(typ, oldTyp = null) {
  */
 function renderProfile(typ) {
   let html = '';
+  const isBJCP = typ.kalla === 'BJCP';
   
-  if (typ.profil && typ.profil.trim() !== '') {
-    // Om vi redan har profil (summary), visa den men utan rubrik om den redan visas av renderNotes
-    // Men i SHBF 2025 verkar 'profil' vara summary. 
-    // Om renderNotes använder 'noter' (description), så kan 'profil' visas här.
-    // Dock, om vi vill följa användarens rubriker exakt:
+  if (isBJCP && typ.profil) {
+    html += `<b>Overall Impression:</b><br><span>${markeraVardeord(typ.profil.replaceAll('\n', '<br>'))}</span><br><br>`;
   }
 
   if (typ.appearance) {
-    html += `<b>Färg/Utseende:</b><br><span>${markeraVardeord(typ.appearance.replaceAll('\n', '<br>'))}</span><br><br>`;
+    const label = isBJCP ? 'Appearance' : 'Färg/Utseende';
+    html += `<b>${label}:</b><br><span>${markeraVardeord(typ.appearance.replaceAll('\n', '<br>'))}</span><br><br>`;
   }
   if (typ.aroma) {
-    html += `<b>Bouquet/Arom:</b><br><span>${markeraVardeord(typ.aroma.replaceAll('\n', '<br>'))}</span><br><br>`;
+    const label = isBJCP ? 'Aroma' : 'Bouquet/Arom';
+    html += `<b>${label}:</b><br><span>${markeraVardeord(typ.aroma.replaceAll('\n', '<br>'))}</span><br><br>`;
   }
   if (typ.flavor) {
-    html += `<b>Smak:</b><br><span>${markeraVardeord(typ.flavor.replaceAll('\n', '<br>'))}</span><br><br>`;
+    const label = isBJCP ? 'Flavor' : 'Smak';
+    html += `<b>${label}:</b><br><span>${markeraVardeord(typ.flavor.replaceAll('\n', '<br>'))}</span><br><br>`;
   }
   if (typ.texture) {
-    html += `<b>Munkänsla:</b><br><span>${markeraVardeord(typ.texture.replaceAll('\n', '<br>'))}</span><br><br>`;
+    const label = isBJCP ? 'Mouthfeel' : 'Munkänsla';
+    html += `<b>${label}:</b><br><span>${markeraVardeord(typ.texture.replaceAll('\n', '<br>'))}</span><br><br>`;
   }
 
   return html;
@@ -355,8 +359,9 @@ function renderProfile(typ) {
  * Rendera exempel-sektion
  * @private
  */
-function renderExamples(exempel) {
+function renderExamples(exempel, typ) {
+  const label = typ?.kalla === 'BJCP' ? 'Commercial Examples' : 'Förebild';
   return (exempel && exempel.trim() !== '') 
-    ? `<b>Förebild:</b><br><span>${exempel.replaceAll('\n', '<br>')}</span>` 
+    ? `<b>${label}:</b><br><span>${exempel.replaceAll('\n', '<br>')}</span>` 
     : '';
 }

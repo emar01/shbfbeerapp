@@ -72,7 +72,8 @@ function parseSHBFData(data, kategorierMap) {
           aroma: style.aroma || '',
           flavor: style.flavor || '',
           appearance: style.appearance || '',
-          texture: style.texture || ''
+          texture: style.texture || '',
+          kalla: 'SHBF'
         });
       });
     }
@@ -153,7 +154,8 @@ function parseSHBFXMLData(styleNodes, kategorierMap) {
       ABV_MAX: style.querySelector('ABV_MAX')?.textContent || '',
       noter: style.querySelector('NOTES')?.textContent || '',
       profil: style.querySelector('PROFILE')?.textContent || '',
-      exempel: style.querySelector('EXAMPLES')?.textContent || ''
+      exempel: style.querySelector('EXAMPLES')?.textContent || '',
+      kalla: 'SHBF'
     });
   });
 }
@@ -189,16 +191,6 @@ function parseBJCPXMLData(data, kategorierMap) {
       const subNamn = sub.querySelector('name')?.textContent || '';
       const subId = sub.getAttribute('id') || '';
       
-      // Hämta notes/body
-      let noter = '';
-      let bodyNode = sub.querySelector('body');
-      if (bodyNode) {
-        noter = bodyNode.innerHTML
-          .replace(/<br\s*\/?>(\s*)?/gi, '\n')
-          .replace(/<[^>]+>/g, '')
-          .trim();
-      }
-      
       // Hämta stats
       let OG_MIN = '', OG_MAX = '', FG_MIN = '', FG_MAX = '';
       let ABV_MIN = '', ABV_MAX = '', IBU_MIN = '', IBU_MAX = '';
@@ -215,6 +207,53 @@ function parseBJCPXMLData(data, kategorierMap) {
         if (typ === 'ibu') { IBU_MIN = low; IBU_MAX = high; }
         if (typ === 'srm') { COLOR_MIN = low; COLOR_MAX = high; }
       });
+
+      // Extrahera sektioner ur body
+      let aroma = '', appearance = '', flavor = '', texture = '', example = '', profil = '';
+      let additionalSections = [];
+      
+      let bodyNode = sub.querySelector('body');
+      if (bodyNode) {
+        const bodyHtml = bodyNode.innerHTML;
+        const headingRegex = /<big><b>(.*?)<\/b><\/big>/gi;
+        let lastIndex = 0;
+        let match;
+        let currentHeading = '';
+        
+        while ((match = headingRegex.exec(bodyHtml)) !== null) {
+          if (currentHeading) {
+            const content = bodyHtml.substring(lastIndex, match.index).trim();
+            processSection(currentHeading, content);
+          }
+          currentHeading = match[1];
+          lastIndex = headingRegex.lastIndex;
+        }
+        if (currentHeading) {
+          const content = bodyHtml.substring(lastIndex).trim();
+          processSection(currentHeading, content);
+        }
+      }
+
+      function processSection(heading, content) {
+        const cleanContent = content
+          .replace(/<br\s*\/?>(\s*)?/gi, '\n')
+          .replace(/<[^>]+>/g, '')
+          .trim();
+          
+        switch (heading.toLowerCase()) {
+          case 'aroma': aroma = cleanContent; break;
+          case 'appearance': appearance = cleanContent; break;
+          case 'flavor': flavor = cleanContent; break;
+          case 'mouthfeel': texture = cleanContent; break;
+          case 'overall impression': profil = cleanContent; break;
+          case 'commercial examples': example = cleanContent; break;
+          default:
+            if (cleanContent) {
+              additionalSections.push(`<b>${heading}</b>\n${cleanContent}`);
+            }
+            break;
+        }
+      }
       
       kategorierMap[kategoriKey].typer.push({
         persistentId: '',
@@ -233,9 +272,14 @@ function parseBJCPXMLData(data, kategorierMap) {
         COLOR_MAX,
         ABV_MIN,
         ABV_MAX,
-        noter,
-        profil: '',
-        exempel: ''
+        noter: additionalSections.join('\n\n'),
+        profil,
+        exempel: example,
+        aroma,
+        appearance,
+        flavor,
+        texture,
+        kalla: 'BJCP'
       });
     });
   });
