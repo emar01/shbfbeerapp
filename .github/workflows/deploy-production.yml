@@ -39,6 +39,7 @@ jobs:
       - name: Configure SSH credentials
         env:
           PROD_SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          PROD_SSH_PASSPHRASE: ${{ secrets.PROD_SSH_PASSPHRASE }}
           PROD_SSH_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
         run: |
           set -euo pipefail
@@ -48,14 +49,22 @@ jobs:
           printf '%s\n' "$PROD_SSH_PRIVATE_KEY" > "$HOME/.ssh/production_deploy"
           printf '%s\n' "$PROD_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/production_deploy" "$HOME/.ssh/known_hosts"
+          eval "$(ssh-agent -a "$HOME/.ssh/agent.sock" -s)"
+          printf 'SSH_AUTH_SOCK=%s\n' "$SSH_AUTH_SOCK" >> "$GITHUB_ENV"
+          cat > "$HOME/.ssh/askpass" <<'EOF'
+          #!/bin/sh
+          printf '%s\n' "$PROD_SSH_PASSPHRASE"
+          EOF
+          chmod 700 "$HOME/.ssh/askpass"
+          DISPLAY=:0 SSH_ASKPASS="$HOME/.ssh/askpass" SSH_ASKPASS_REQUIRE=force \
+            ssh-add "$HOME/.ssh/production_deploy" < /dev/null
+          rm "$HOME/.ssh/askpass"
 
       - name: Verify SSH connection and remote folder
         run: |
           set -euo pipefail
           echo "Checking ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}"
-          ssh -i "$HOME/.ssh/production_deploy" \
-            -o IdentitiesOnly=yes \
-            -o BatchMode=yes \
+          ssh -o BatchMode=yes \
             -o StrictHostKeyChecking=yes \
             "$REMOTE_USER@$REMOTE_HOST" \
             "test -d '$REMOTE_DIR' && printf 'Remote home: %s\\nTarget exists: %s\\n' \"\$HOME\" '$REMOTE_DIR' && ls -la '$REMOTE_DIR'"
@@ -69,5 +78,5 @@ jobs:
         run: |
           set -euo pipefail
           rsync -avz --progress \
-            -e "ssh -i $HOME/.ssh/production_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes" \
+            -e "ssh -o BatchMode=yes -o StrictHostKeyChecking=yes" \
             dist/ "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR"
