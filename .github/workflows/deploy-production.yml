@@ -1,0 +1,73 @@
+name: Deploy to production server
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: "Verify SSH access and target folder, or deploy dist/"
+        type: choice
+        options:
+          - verify
+          - deploy
+        default: verify
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-server-deploy
+  cancel-in-progress: false
+
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    env:
+      REMOTE_USER: shbfhems
+      REMOTE_HOST: styles.shbf.se
+      REMOTE_DIR: public_html/styles/app/
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Require main for production deployment
+        if: inputs.operation == 'deploy' && github.ref != 'refs/heads/main'
+        run: |
+          echo "Production deployment is allowed only from main. Selected ref: $GITHUB_REF" >&2
+          exit 1
+
+      - name: Configure SSH credentials
+        env:
+          PROD_SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+          PROD_SSH_KNOWN_HOSTS: ${{ secrets.PROD_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          : "${PROD_SSH_PRIVATE_KEY:?Add the PROD_SSH_PRIVATE_KEY repository secret}"
+          : "${PROD_SSH_KNOWN_HOSTS:?Add the PROD_SSH_KNOWN_HOSTS repository secret}"
+          install -m 700 -d "$HOME/.ssh"
+          printf '%s\n' "$PROD_SSH_PRIVATE_KEY" > "$HOME/.ssh/production_deploy"
+          printf '%s\n' "$PROD_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/production_deploy" "$HOME/.ssh/known_hosts"
+
+      - name: Verify SSH connection and remote folder
+        run: |
+          set -euo pipefail
+          echo "Checking ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_DIR}"
+          ssh -i "$HOME/.ssh/production_deploy" \
+            -o IdentitiesOnly=yes \
+            -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes \
+            "$REMOTE_USER@$REMOTE_HOST" \
+            "test -d '$REMOTE_DIR' && printf 'Remote home: %s\\nTarget exists: %s\\n' \"\$HOME\" '$REMOTE_DIR' && ls -la '$REMOTE_DIR'"
+
+      - name: Build distribution
+        if: inputs.operation == 'deploy'
+        run: bash ./management/build.sh
+
+      - name: Deploy dist to production
+        if: inputs.operation == 'deploy'
+        run: |
+          set -euo pipefail
+          rsync -avz --progress \
+            -e "ssh -i $HOME/.ssh/production_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=yes" \
+            dist/ "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR"
