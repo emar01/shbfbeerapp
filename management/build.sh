@@ -22,6 +22,7 @@ mkdir -p dist/db
 echo "Kopierar HTML och CSS..."
 cp index.html dist/
 cp style.css dist/
+cp manifest.json sw.js dist/
 
 # Kopiera alla JavaScript-moduler
 echo "Kopierar JavaScript-moduler..."

@@ -49,6 +49,19 @@ php -S localhost:8000
 
 Öppna sedan `http://localhost:8000` i din webbläsare.
 
+### Kvalitetssäkring före deploy
+
+Bygg först distributionsmappen, installera projektets beroenden och Playwright-webbläsaren en gång, kör sedan kontrollerna:
+
+```powershell
+.\management\build.bat -Clean
+npm ci
+npx playwright install chromium
+npm test
+```
+
+Kontrollerna granskar distributionsfiler, lokala resurser och JavaScript-syntax. Smoketestet öppnar appen i Chromium, hämtar SHBF-data, söker efter en ölstil och växlar till lokal BJCP-data.
+
 ## Uppdatera SHBF-data
 
 SHBF-data hämtas från API:et och sparas lokalt för att undvika CORS-problem:

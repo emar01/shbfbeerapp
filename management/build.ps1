@@ -31,6 +31,7 @@ New-Item -ItemType Directory -Path "dist/db" -Force | Out-Null
 Write-Host "Kopierar HTML och CSS..." -ForegroundColor Green
 Copy-Item "index.html" -Destination "dist/"
 Copy-Item "style.css" -Destination "dist/"
+Copy-Item "manifest.json", "sw.js" -Destination "dist/"
 
 # Kopiera alla JavaScript-moduler
 Write-Host "Kopierar JavaScript-moduler..." -ForegroundColor Green

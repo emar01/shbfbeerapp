@@ -54,6 +54,8 @@ yarn-error.log*
 
 # Test coverage
 .coverage
+test-results/
+playwright-report/
 .tox/
 .nox/
 .coverage.*
